@@ -1,4 +1,4 @@
-#Policy which assigns members to built-in Windows security groups.
+# Policy which assigns members to built-in Windows security groups.
 
 Implemented by deploying a  `Managed Run Commands` "Microsoft.Compute/virtualMachines/runCommands" resource if
 
