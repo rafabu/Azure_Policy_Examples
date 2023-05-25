@@ -1,0 +1,240 @@
+{
+    "properties": {
+        "displayName": "[Custom] Modify built-in security group membership on Windows Domain joined computer that used JsonADDomainExtension",
+        "description": "Adds user or group accounts to local windows security group using Add-LocalGroupMember. In order for the policy effect to work, the VM must have a extension JsonADDomainExtension present.",
+        "policyType": "Custom",
+        "mode": "All",
+        "metadata": {
+            "category": "Guest Configuration",
+            "version": "1.0.0"
+        },
+        "parameters": {
+            "effect": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Effect",
+                    "description": "Enable or disable the execution of the policy"
+                },
+                "allowedValues": [
+                    "DeployIfNotExists",
+                    "Disabled"
+                ],
+                "defaultValue": "DeployIfNotExists"
+            },
+            "groupName": {
+                "type": "string",
+                "metadata": {
+                    "displayName": "groupName",
+                    "description": "Name of built-in security group"
+                },
+                "allowedValues": [
+                    "Access Control Assistance Operators",
+                    "Administrators",
+                    "Backup Operators",
+                    "Cryptographic Operators",
+                    "Device Owners",
+                    "Distributed COM Users",
+                    "Event Log Readers",
+                    "Guests",
+                    "Hyper-V Administrators",
+                    "IIS_IUSRS",
+                    "Network Configuration Operators",
+                    "Performance Log Users",
+                    "Performance Monitor Users",
+                    "Power Users",
+                    "Remote Desktop Users",
+                    "Remote Management Users",
+                    "Users"
+                ]
+            },
+            "groupMember": {
+                "type": "string",
+                "metadata": {
+                    "displayName": "groupMember",
+                    "description": "Group or user reference that is made member of the built-in group (local or NetBIOS\\domainName). Several members are supported when defined CSV (ideally with double quote): \"DOMAIN\\first.last\", \"DOMAIN\\sample group name with spaces\""
+                }
+            }
+        },
+        "policyRule": {
+            "$schema": "https://schema.management.azure.com/schemas/2020-10-01/policyDefinition.json#",
+            "if": {
+                "allOf": [
+                    {
+                        "field": "type",
+                        "equals": "Microsoft.Compute/virtualMachines"
+                    },
+                    {
+                        "allOf": [
+                            {
+                                "field": "Microsoft.Compute/virtualMachines/extensions/publisher",
+                                "equals": "Microsoft.Compute"
+                            },
+                            {
+                                "field": "Microsoft.Compute/virtualMachines/extensions/type",
+                                "equals": "JsonADDomainExtension"
+                            },
+                            {
+                                "field": "Microsoft.Compute/virtualMachines/extensions/provisioningState",
+                                "equals": "Succeeded"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "then": {
+                "effect": "[parameters('effect')]",
+                "details": {
+                    "type": "Microsoft.Compute/virtualMachines/runCommands",
+                    "name": "[concat(field('name'), '/', 'Add-LocalGroupMember', '_', guid(concat(parameters('groupName'), parameters('groupMember'))))]",
+                    "roleDefinitionIds": [
+                        "/providers/microsoft.authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c"
+                    ],
+                    "deployment": {
+                        "properties": {
+                            "mode": "incremental",
+                            "parameters": {
+                                "vmName": {
+                                    "value": "[field('name')]"
+                                },
+                                "vmLocation": {
+                                    "value": "[field('location')]"
+                                },
+                                "groupName": {
+                                    "value": "[parameters('groupName')]"
+                                },
+                                "groupMember": {
+                                    "value": "[parameters('groupMember')]"
+                                },
+                                "executionTag": {
+                                    "value": "[guid(concat(parameters('groupName'), parameters('groupMember')))]"
+                                }
+                            },
+                            "template": {
+                                "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json",
+                                "contentVersion": "1.0.0.0",
+                                "parameters": {
+                                    "vmName": {
+                                        "type": "String"
+                                    },
+                                    "vmLocation": {
+                                        "type": "String"
+                                    },
+                                    "executionTag": {
+                                        "type": "string",
+                                        "defaultValue": "[newGuid()]",
+                                        "metadata": {
+                                            "description": "Uniquely identify this particular deployment of the template."
+                                        }
+                                    },
+                                    "groupName": {
+                                        "type": "string",
+                                        "metadata": {
+                                            "description": "Name of built-in security group"
+                                        },
+                                        "allowedValues": [
+                                            "Access Control Assistance Operators",
+                                            "Administrators",
+                                            "Backup Operators",
+                                            "Cryptographic Operators",
+                                            "Device Owners",
+                                            "Distributed COM Users",
+                                            "Event Log Readers",
+                                            "Guests",
+                                            "Hyper-V Administrators",
+                                            "IIS_IUSRS",
+                                            "Network Configuration Operators",
+                                            "Performance Log Users",
+                                            "Performance Monitor Users",
+                                            "Power Users",
+                                            "Remote Desktop Users",
+                                            "Remote Management Users",
+                                            "Users"
+                                        ]
+                                    },
+                                    "groupMember": {
+                                        "type": "string",
+                                        "metadata": {
+                                            "description": "Group or user reference that is made member of the built-in group (local or NetBIOS\\domainName). Several members are supported when defined CSV (ideally with double quote): \"DOMAIN\\first.last\", \"DOMAIN\\sample group name with spaces\""
+                                        }
+                                    }
+                                },
+                                "variables": {
+                                    "groupReference": {
+                                        "Access Control Assistance Operators": {
+                                            "sid": "S-1-5-32-579"
+                                        },
+                                        "Administrators": {
+                                            "sid": "S-1-5-32-544"
+                                        },
+                                        "Backup Operators": {
+                                            "sid": "S-1-5-32-551"
+                                        },
+                                        "Cryptographic Operators": {
+                                            "sid": "S-1-5-32-569"
+                                        },
+                                        "Device Owners": {
+                                            "sid": "S-1-5-32-583"
+                                        },
+                                        "Distributed COM Users": {
+                                            "sid": "S-1-5-32-562"
+                                        },
+                                        "Event Log Readers": {
+                                            "sid": "S-1-5-32-573"
+                                        },
+                                        "Guests": {
+                                            "sid": "S-1-5-32-546"
+                                        },
+                                        "Hyper-V Administrators": {
+                                            "sid": "S-1-5-32-578"
+                                        },
+                                        "IIS_IUSRS": {
+                                            "sid": "S-1-5-32-568"
+                                        },
+                                        "Network Configuration Operators": {
+                                            "sid": "S-1-5-32-556"
+                                        },
+                                        "Performance Log Users": {
+                                            "sid": "S-1-5-32-559"
+                                        },
+                                        "Performance Monitor Users": {
+                                            "sid": "S-1-5-32-558"
+                                        },
+                                        "Power Users": {
+                                            "sid": "S-1-5-32-547"
+                                        },
+                                        "Remote Desktop Users": {
+                                            "sid": "S-1-5-32-555"
+                                        },
+                                        "Remote Management Users": {
+                                            "sid": "S-1-5-32-580"
+                                        },
+                                        "Users": {
+                                            "sid": "S-1-5-32-545"
+                                        }
+                                    }
+                                },
+                                "resources": [
+                                    {
+                                        "type": "Microsoft.Compute/virtualMachines/runCommands",
+                                        "apiVersion": "2023-03-01",
+                                        "name": "[concat(parameters('vmName'), '/', 'Add-LocalGroupMember', '_', parameters('executionTag'))]",
+                                        "location": "[parameters('vmLocation')]",
+                                        "properties": {
+                                            "asyncExecution": false,
+                                            "parameters": [],
+                                            "protectedParameters": [],
+                                            "source": {
+                                                "script": "[concat('Add-LocalGroupMember -SID \"', variables('groupReference')[parameters('groupName')].sid, '\" -Member ', parameters('groupMember'), ' -ErrorAction Ignore')]"
+                                            }
+                                        }
+                                    }
+                                ],
+                                "outputs": {}
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
