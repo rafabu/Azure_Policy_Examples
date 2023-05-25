@@ -7,6 +7,8 @@ Implemented by deploying a  `Managed Run Commands` "Microsoft.Compute/virtualMac
 
 Allows adding members of either local or domain user and group type.
 
+Thought to be used in conjunction with the CAF policy [Deploy-Windows-DomainJoin](https://www.azadvertizer.net/azpolicyadvertizer/Deploy-Windows-DomainJoin.html)
+
 Reference several members in `groupMember` parameter like (including the double quotes, comma and backslash):
 
 - "DOMAINNAME\Group Name", "DOMAINNAME\samAccountName"
