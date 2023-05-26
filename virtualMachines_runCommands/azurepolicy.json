@@ -1,9 +1,9 @@
 {
     "properties": {
-        "displayName": "[Custom] Modify built-in security group membership on Windows Domain joined computer that used JsonADDomainExtension",
+        "displayName": "[Custom] Add members to built-in security groups on Windows Domain joined computer that used JsonADDomainExtension",
         "description": "Adds user or group accounts to local windows security group using Add-LocalGroupMember. In order for the policy effect to work, the VM must have a extension JsonADDomainExtension present.",
         "policyType": "Custom",
-        "mode": "All",
+        "mode": "Indexed",
         "metadata": {
             "category": "Guest Configuration",
             "version": "1.0.0"
@@ -22,7 +22,7 @@
                 "defaultValue": "DeployIfNotExists"
             },
             "groupName": {
-                "type": "string",
+                "type": "String",
                 "metadata": {
                     "displayName": "groupName",
                     "description": "Name of built-in security group"
@@ -48,7 +48,7 @@
                 ]
             },
             "groupMember": {
-                "type": "string",
+                "type": "String",
                 "metadata": {
                     "displayName": "groupMember",
                     "description": "Group or user reference that is made member of the built-in group (local or NetBIOS\\domainName). Several members are supported when defined CSV (ideally with double quote): \"DOMAIN\\first.last\", \"DOMAIN\\sample group name with spaces\""
@@ -56,7 +56,6 @@
             }
         },
         "policyRule": {
-            "$schema": "https://schema.management.azure.com/schemas/2020-10-01/policyDefinition.json#",
             "if": {
                 "allOf": [
                     {
