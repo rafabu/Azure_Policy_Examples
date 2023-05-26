@@ -69,10 +69,6 @@
                     {
                         "field": "Microsoft.Compute/virtualMachines/extensions/type",
                         "equals": "JsonADDomainExtension"
-                    },
-                    {
-                        "field": "Microsoft.Compute/virtualMachines/extensions/provisioningState",
-                        "equals": "Succeeded"
                     }
                 ]
             },
