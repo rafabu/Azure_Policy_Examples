@@ -1,0 +1,296 @@
+{
+  "properties": {
+    "displayName": "[Custom] FW-CLOSE 02 - ASSIGN & REMEDIATE policy",
+    "description": "Adds and forces remediate of policy 'Configure storage accounts to disable public network access' to resource groups with a specific tag set.",
+    "policyType": "Custom",
+    "mode": "All",
+    "metadata": {
+      "category": "Storage",
+      "version": "1.0.0"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "policyAssignmentDisplayName": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Policy Assignment Display Name",
+          "description": "The display name of the policy assignment."
+        },
+        "defaultValue": "[Custom] Configure storage accounts to disable public network access"
+      },
+      "policyAssignmentParameters": {
+        "type": "Object",
+        "metadata": {
+          "displayName": "Parameters",
+          "description": "Policy parameter values used for this assignment"
+        },
+        "defaultValue": {}
+      },
+      "policyDefinitionID": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Policy or Initiative ID",
+          "description": "Specifies the ID of the policy definition or policy set definition being assigned. Built-in as '/providers/Microsoft.Authorization/policyDefinitions/{guid}'."
+        },
+        "defaultValue": "/providers/Microsoft.Authorization/policyDefinitions/a06d0189-92e8-4dba-b0c4-08d7669fce7d"
+      },
+      "policyAssignmentRemediationResourceDiscoveryMode": {
+        "type": "String",
+        "metadata": {
+          "description": "Re-evaluate compliance before remediation."
+        },
+        "allowedValues": [
+          "ExistingNonCompliant",
+          "ReEvaluateCompliance"
+        ],
+        "defaultValue": "ReEvaluateCompliance"
+      },
+      "tagName": {
+        "type": "String",
+        "metadata": {
+          "displayName": "tag name (resource group)",
+          "description": "specifies the name of the tag that triggers the assignment deployment."
+        }
+      },
+      "tagValues": {
+        "type": "Array",
+        "metadata": {
+          "displayName": "tag values (array)",
+          "description": "array of tag values that will trigger the deployment"
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Resources/subscriptions/resourceGroups"
+          },
+          {
+            "field": "[concat('tags[', parameters('tagName'), ']')]",
+            "in": "[parameters('tagValues')]"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]",
+        "details": {
+          "type": "Microsoft.Authorization/policyAssignments",
+          "name": "[guid(parameters('policyDefinitionID'), field('id'))]",
+          "deploymentScope": "resourceGroup",
+          "existenceScope": "subscription",
+          "evaluationDelay": "AfterProvisioningSuccess",
+          "roleDefinitionIds": [
+            "/providers/microsoft.authorization/roleDefinitions/36243c78-bf99-498c-9df9-86d9f8d28608",
+            "/providers/microsoft.authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168"
+          ],
+          "deployment": {
+            "properties": {
+              "mode": "incremental",
+              "parameters": {
+                "policyAssignmentName": {
+                  "value": "[guid(parameters('policyDefinitionID'), field('id'))]"
+                },
+                "policyAssignmentLocation": {
+                  "value": "[field('location')]"
+                },
+                "policyAssignmentScope": {
+                  "value": "[field('id')]"
+                },
+                "policyAssignmentDisplayName": {
+                  "value": "[parameters('policyAssignmentDisplayName')]"
+                },
+                "policyAssignmentParameters": {
+                  "value": "[parameters('policyAssignmentParameters')]"
+                },
+                "policyDefinitionID": {
+                  "value": "[parameters('policyDefinitionID')]"
+                },
+                "policyAssignmentRemediationResourceDiscoveryMode": {
+                  "value": "[parameters('policyAssignmentRemediationResourceDiscoveryMode')]"
+                }
+              },
+              "template": {
+                "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json",
+                "contentVersion": "1.0.0.0",
+                "parameters": {
+                  "policyAssignmentName": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "The name of the policy assignment (GUID)."
+                    },
+                    "defaultValue": "[guid(parameters('policyDefinitionID'), parameters('policyAssignmentScope'))]"
+                  },
+                  "policyAssignmentRoleAssignmentsName": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "GUID to uniquely identify the deployment of the assignment's RBAC permissions."
+                    },
+                    "defaultValue": "[guid(parameters('policyDefinitionID'), parameters('policyAssignmentScope'), utcNow())]"
+                  },
+                  "policyAssignmentLocation": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "The location of the policy assignment."
+                    },
+                    "defaultValue": "eastus"
+                  },
+                  "policyAssignmentScope": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Resource ID of the assignment scope"
+                    }
+                  },
+                  "policyAssignmentDisplayName": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "The display name of the policy assignment."
+                    }
+                  },
+                  "policyAssignmentParameters": {
+                    "type": "object",
+                    "metadata": {
+                      "displayName": "Parameters",
+                      "description": "Policy parameter values used for this assignment"
+                    },
+                    "defaultValue": {}
+                  },
+                 
+                  "policyDefinitionID": {
+                    "type": "string",
+                    "metadata": {
+                      "displayName": "Policy or Initiative ID",
+                      "description": "Specifies the ID of the policy definition or policy set definition being assigned. Built-in as '/providers/Microsoft.Authorization/policyDefinitions/{guid}'."
+                    }
+                  },
+                  "policyAssignmentRemediationResourceDiscoveryMode": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Re-evaluate compliance before remediation."
+                    },
+                    "allowedValues": [
+                      "ExistingNonCompliant",
+                      "ReEvaluateCompliance"
+                    ],
+                    "defaultValue": "ReEvaluateCompliance"
+                  }
+                },
+                "resources": [
+                  {
+                    "type": "Microsoft.Authorization/policyAssignments",
+                    "name": "[parameters('policyAssignmentName')]",
+                    "apiVersion": "2022-06-01",
+                    "location": "[parameters('policyAssignmentLocation')]",
+                    "identity": {
+                      "type": "SystemAssigned"
+                    },
+                    "properties": {
+                      "scope": "[parameters('policyAssignmentScope')]",
+                      "policyDefinitionId": "[parameters('policyDefinitionID')]",
+                      "displayName": "[parameters('policyAssignmentDisplayName')]",
+                      "parameters": "[parameters('policyAssignmentParameters')]",
+                      "enforcementMode": "Default"
+                  
+                    }
+                  },
+                  {
+                    "type": "Microsoft.Resources/deployments",
+                    "apiVersion": "2022-09-01",
+                    "name": "[parameters('policyAssignmentRoleAssignmentsName')]",
+                    "properties": {
+                      "expressionEvaluationOptions": {
+                        "scope": "inner"
+                      },
+                      "mode": "Incremental",
+                      "parameters": {
+                        "name": {
+                          "value": "[parameters('policyAssignmentRoleAssignmentsName')]"
+                        },
+                        "roleDefinitionIds": {
+                          "value": "[reference(parameters('policyDefinitionID'), '2021-06-01', 'Full').properties.policyRule.then.details.roleDefinitionIds]"
+                        },
+                        "principalId": {
+                          "value": "[reference(resourceId('Microsoft.Authorization/policyAssignments', parameters('policyAssignmentName')), '2022-06-01', 'Full').identity.principalId]"
+                        },
+                        "description": {
+                          "value": "[concat('Azure Policy Assignment for policy ', parameters('policyDefinitionID'))]"
+                        }
+                      },
+                      "template": {
+                        "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                        "contentVersion": "1.0.0.0",
+                        "parameters": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "roleDefinitionIds": {
+                            "type": "Array"
+                          },
+                          "principalId": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string"
+                          }
+                        },
+                        "resources": [
+                          {
+                            "copy": {
+                              "name": "roleDefinitionIds",
+                              "count": "[length(parameters('roleDefinitionIds'))]",
+                              "mode": "parallel"
+                            },
+                            "type": "Microsoft.Authorization/roleAssignments",
+                            "apiVersion": "2022-04-01",
+                            "name": "[guid(concat(parameters('name'), copyIndex()))]",
+                            "properties": {
+                              "roleDefinitionId": "[parameters('roleDefinitionIds')[copyIndex()]]",
+                              "principalId": "[parameters('principalId')]",
+                              "principalType": "ServicePrincipal",
+                              "description": "[parameters('description')]"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "dependsOn": [
+                      "[resourceId('Microsoft.Authorization/policyAssignments', parameters('policyAssignmentName'))]"
+                    ]
+                  },
+                  {
+                    "type": "Microsoft.PolicyInsights/remediations",
+                    "apiVersion": "2021-10-01",
+                    "name": "[parameters('policyAssignmentName')]",
+                    "properties": {
+                      "policyAssignmentId": "[resourceId('Microsoft.Authorization/policyAssignments', parameters('policyAssignmentName'))]",
+                      "filters": {},
+                      "resourceDiscoveryMode": "[parameters('policyAssignmentRemediationResourceDiscoveryMode')]",
+                      "resourceCount": 512,
+                      "parallelDeployments": 10
+                    },
+                    "dependsOn": [
+                      "[resourceId('Microsoft.Resources/deployments', parameters('policyAssignmentRoleAssignmentsName'))]"
+                    ]
+                  }
+                ],
+                "outputs": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
