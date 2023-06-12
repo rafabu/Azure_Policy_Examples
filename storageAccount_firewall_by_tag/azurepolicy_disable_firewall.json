@@ -1,6 +1,6 @@
 {
     "properties": {
-        "displayName": "[Custom] STOR FW BY TAG - DISABLE - if condition",
+        "displayName": "[Custom] STOR FW - DISABLE - if resource tag is set",
         "description": "To improve the security of Storage Accounts, ensure that they aren't exposed to the public internet and can only be accessed from a private endpoint. Disable the public network access property as described in https://aka.ms/storageaccountpublicnetworkaccess. This option disables access from any public address space outside the Azure IP range, and denies all logins that match IP or virtual network-based firewall rules. This reduces data leakage risks.",
         "policyType": "Custom",
         "mode": "All",
@@ -44,8 +44,16 @@
                     {
                         "field": "[concat('tags[''', parameters('paasFirewallEnableTagName'), ''']')]",
                         "equals": "Disabled"
-                    }
+                    },
                    
+                    {
+                        "field": "Microsoft.Storage/storageAccounts/networkAcls.defaultAction",
+                        "notEquals": "Allow"
+                    },
+                    {
+                        "field": "Microsoft.Storage/storageAccounts/publicNetworkAccess",
+                        "notEquals": "Enabled"
+                    }
                 ]
             },
             "then": {

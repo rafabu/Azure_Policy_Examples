@@ -1,0 +1,204 @@
+{
+    "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        "actions": {
+            "For_each_Body": {
+                "actions": {
+                    "Condition": {
+                        "actions": {
+                            "Azure_API_-_Create_Policy_Remediation_(quick_-_ExistingNonCompliant)": {
+                                "inputs": {
+                                    "authentication": {
+                                        "type": "ManagedServiceIdentity"
+                                    },
+                                    "body": {
+                                        "properties": {
+                                            "policyAssignmentId": "@{items('For_each_Body')?['data']?['policyAssignmentId']}"
+                                        }
+                                    },
+                                    "headers": {
+                                        "Content-Type": "application/json"
+                                    },
+                                    "method": "PUT",
+                                    "queries": {
+                                        "api-version": "2021-10-01"
+                                    },
+                                    "uri": "https://management.azure.com@{first(split(items('For_each_Body')?['data']?['policyAssignmentId'], '/providers/microsoft.authorization/policyassignments/'))}/providers/microsoft.policyinsights/remediations/@{guid()}"
+                                },
+                                "runAfter": {},
+                                "type": "Http"
+                            },
+                            "Azure_API_-_Trigger_Policy_Evaluation": {
+                                "inputs": {
+                                    "authentication": {
+                                        "type": "ManagedServiceIdentity"
+                                    },
+                                    "headers": {
+                                        "Content-Type": "application/json"
+                                    },
+                                    "method": "POST",
+                                    "queries": {
+                                        "api-version": "2019-10-01"
+                                    },
+                                    "uri": "https://management.azure.com@{items('For_each_Body')['subject']}/providers/microsoft.policyinsights/policyStates/latest/triggerEvaluation"
+                                },
+                                "runAfter": {
+                                    "Until_-_Remediation_finishes_(Succeeded)": [
+                                        "Succeeded"
+                                    ]
+                                },
+                                "type": "Http"
+                            },
+                            "Until_-_Remediation_finishes_(Succeeded)": {
+                                "actions": {
+                                    "Azure_API_-_Check_Remediation": {
+                                        "inputs": {
+                                            "authentication": {
+                                                "type": "ManagedServiceIdentity"
+                                            },
+                                            "headers": {
+                                                "Content-Type": "application/json"
+                                            },
+                                            "method": "GET",
+                                            "queries": {
+                                                "api-version": "2021-10-01"
+                                            },
+                                            "uri": "https://management.azure.com@{body('Azure_API_-_Create_Policy_Remediation_(quick_-_ExistingNonCompliant)')?['id']}"
+                                        },
+                                        "runAfter": {},
+                                        "type": "Http"
+                                    }
+                                },
+                                "expression": "@contains('Succeeded', body('Azure_API_-_Create_Policy_Remediation_(quick_-_ExistingNonCompliant)')?['properties']?['provisioningState'])",
+                                "limit": {
+                                    "count": 60,
+                                    "timeout": "PT1H"
+                                },
+                                "runAfter": {
+                                    "Azure_API_-_Create_Policy_Remediation_(quick_-_ExistingNonCompliant)": [
+                                        "Succeeded"
+                                    ]
+                                },
+                                "type": "Until"
+                            }
+                        },
+                        "expression": {
+                            "and": [
+                                {
+                                    "equals": [
+                                        "@items('For_each_Body')?['data']?['complianceState']",
+                                        "NonCompliant"
+                                    ]
+                                },
+                                {
+                                    "equals": [
+                                        "@items('For_each_Body')?['data']?['subscriptionId']",
+                                        "73e7819b-1f47-457c-b6d0-ddcc1627c6ce"
+                                    ]
+                                },
+                                {
+                                    "or": [
+                                        {
+                                            "endsWith": [
+                                                "@items('For_each_Body')?['data']?['policyDefinitionId']",
+                                                "4bfac813-ec87-47d6-a6cf-9485760ed610"
+                                            ]
+                                        },
+                                        {
+                                            "endsWith": [
+                                                "@items('For_each_Body')?['data']?['policyDefinitionId']",
+                                                "b273517b-8afb-44c2-ba28-5c4fc56349de"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        "runAfter": {},
+                        "type": "If"
+                    }
+                },
+                "foreach": "@triggerBody()",
+                "runAfter": {},
+                "type": "Foreach"
+            }
+        },
+        "contentVersion": "1.0.0.0",
+        "outputs": {},
+        "parameters": {},
+        "triggers": {
+            "manual": {
+                "inputs": {
+                    "schema": {
+                        "items": {
+                            "properties": {
+                                "data": {
+                                    "properties": {
+                                        "complianceReasonCode": {
+                                            "type": "string"
+                                        },
+                                        "complianceState": {
+                                            "type": "string"
+                                        },
+                                        "policyAssignmentId": {
+                                            "type": "string"
+                                        },
+                                        "policyDefinitionId": {
+                                            "type": "string"
+                                        },
+                                        "policyDefinitionReferenceId": {
+                                            "type": "string"
+                                        },
+                                        "subscriptionId": {
+                                            "type": "string"
+                                        },
+                                        "timestamp": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                },
+                                "dataVersion": {
+                                    "type": "string"
+                                },
+                                "eventTime": {
+                                    "type": "string"
+                                },
+                                "eventType": {
+                                    "type": "string"
+                                },
+                                "id": {
+                                    "type": "string"
+                                },
+                                "metadataVersion": {
+                                    "type": "string"
+                                },
+                                "subject": {
+                                    "type": "string"
+                                },
+                                "topic": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "id",
+                                "topic",
+                                "subject",
+                                "data",
+                                "eventType",
+                                "eventTime",
+                                "dataVersion",
+                                "metadataVersion"
+                            ],
+                            "type": "object"
+                        },
+                        "type": "array"
+                    }
+                },
+                "kind": "Http",
+                "type": "Request"
+            }
+        }
+    },
+    "parameters": {}
+}
