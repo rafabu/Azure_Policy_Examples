@@ -1,0 +1,69 @@
+{
+    "properties": {
+        "displayName": "[Custom] Inherit a tag from the resource group in PaaS resources.",
+        "policyType": "Custom",
+        "mode": "Indexed",
+        "description": "Adds or replaces the specified tag and value from the parent resource group when any resource is created or updated. Existing resources can be remediated by triggering a remediation task.",
+        "metadata": {
+            "version": "1.0.0",
+            "category": "Tags"
+        },
+        "parameters": {
+            "tagName": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Tag Name",
+                    "description": "Name of the tag, such as 'environment'"
+                }
+            },
+            "resourceTypes": {
+                "type": "Array",
+                "metadata": {
+                    "displayName": "Azure Resource Types",
+                    "description": "Azure Resource Types the inheritance will be active on'"
+                },
+                "defaultValue": [
+                    "Microsoft.Databricks/workspaces",
+                    "Microsoft.DataFactory/dataFactories",
+                    "Microsoft.KeyVault/vaults",
+                    "Microsoft.Sql/servers",
+                    "Microsoft.Storage/storageAccounts",
+                    "Microsoft.Web/sites"
+                ]
+            }
+        },
+        "policyRule": {
+            "if": {
+                "allOf": [
+                    {
+                        "field": "type",
+                        "in": "[parameters('resourceTypes')]"
+                    },
+                    {
+                        "field": "[concat('tags[''', parameters('tagName'), ''']')]",
+                        "notEquals": "[resourceGroup().tags[parameters('tagName')]]"
+                    },
+                    {
+                        "value": "[resourceGroup().tags[parameters('tagName')]]",
+                        "notEquals": ""
+                    }
+                ]
+            },
+            "then": {
+                "effect": "modify",
+                "details": {
+                    "roleDefinitionIds": [
+                        "/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                    ],
+                    "operations": [
+                        {
+                            "operation": "addOrReplace",
+                            "field": "[concat('tags[''', parameters('tagName'), ''']')]",
+                            "value": "[resourceGroup().tags[parameters('tagName')]]"
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}

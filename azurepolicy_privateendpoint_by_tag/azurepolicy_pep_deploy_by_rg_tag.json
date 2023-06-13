@@ -1,6 +1,6 @@
 {
     "properties": {
-        "displayName": "[Custom] STOR PEP - DEPLOY - if resource tag is set",
+        "displayName": "[Custom] STOR PEP - DEPLOY - if GROUP tag is set",
         "policyType": "Custom",
         "mode": "Indexed",
         "description": "Private endpoints connect your virtual network to Azure services without a public IP address at the source or destination. By mapping private endpoints to your storage account, you can reduce data leakage risks. Learn more about private links at - https://aka.ms/azureprivatelinkoverview",
@@ -76,11 +76,7 @@
                         ]
                     },
                     {
-                        "field": "[concat('tags[''', parameters('paasPrivateEndpointEnableTagName'), ''']')]",
-                        "exists": true
-                    },
-                    {
-                        "field": "[concat('tags[''', parameters('paasPrivateEndpointEnableTagName'), ''']')]",
+                        "value": "[resourceGroup().tags[parameters('paasPrivateEndpointEnableTagName')]]",
                         "equals": "Enabled"
                     }
                 ]
