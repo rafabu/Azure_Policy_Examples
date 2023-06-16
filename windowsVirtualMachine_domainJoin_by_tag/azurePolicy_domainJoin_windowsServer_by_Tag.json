@@ -178,6 +178,149 @@
                         ]
                       }
                     ]
+                  },
+                  {
+                    "allOf": [
+                      {
+                        "field": "Microsoft.Compute/imagePublisher",
+                        "equals": "MicrosoftWindowsServerHPCPack"
+                      },
+                      {
+                        "field": "Microsoft.Compute/imageOffer",
+                        "equals": "WindowsServerHPCPack"
+                      },
+                      {
+                        "field": "Microsoft.Compute/imageSKU",
+                        "in": [
+                          "2012R2",
+                          "2012R2CN",
+                          "2012R2CNExcel",
+                          "2016U2CN-WS2012R2",
+                          "2016U2CN-WS2012R2-Excel",
+                          "2016U2CN-WS2016",
+                          "2016U2CN-WS2016-Excel",
+                          "2016U2HN-WS2012R2",
+                          "2016U2HN-WS2016",
+                          "2016u3hn-ws2012r2",
+                          "2016u3hn-ws2016",
+                          "2019hn-ws2016",
+                          "2019hn-ws2019"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "allOf": [
+                      {
+                        "field": "Microsoft.Compute/imagePublisher",
+                        "equals": "MicrosoftSQLServer"
+                      },
+                      {
+                        "field": "Microsoft.Compute/imageOffer",
+                        "in": [
+                          "SQL2008R2SP3-WS2008R2SP1",
+                          "sql2008r2sp3-ws2008r2sp1-byol",
+                          "SQL2012SP4-WS2012R2",
+                          "SQL2012SP4-WS2012R2-BYOL",
+                          "SQL2014SP2-WS2012R2",
+                          "SQL2014SP2-WS2012R2-BYOL",
+                          "sql2014sp3-ws2012r2",
+                          "sql2014sp3-ws2012r2-byol",
+                          "SQL2016SP1-WS2016",
+                          "SQL2016SP1-WS2016-BYOL",
+                          "SQL2016SP2-WS2012R2",
+                          "SQL2016SP2-WS2016",
+                          "SQL2016SP2-WS2016-BYOL",
+                          "sql2016sp2-ws2019",
+                          "sql2016sp2-ws2019-byol",
+                          "sql2016sp3-ws2019",
+                          "SQL2017-WS2016",
+                          "SQL2017-WS2016-BYOL",
+                          "sql2017-ws2019",
+                          "sql2017-ws2019-byol",
+                          "sql2019-ws2019",
+                          "sql2019-ws2019-byol",
+                          "sql2019-ws2022",
+                          "sql2022-ws2022"
+                        ]
+                      },
+                      {
+                        "field": "Microsoft.Compute/imageSKU",
+                        "in": [
+                          "Enterprise",
+                          "enterprise-gen2",
+                          "enterprisedbengineonly-gen2",
+                          "Express",
+                          "sqldev",
+                          "sqldev-gen2",
+                          "Standard",
+                          "standard-gen2",
+                          "Web",
+                          "web-gen2"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "allOf": [
+                      {
+                        "field": "Microsoft.Compute/imagePublisher",
+                        "equals": "MicrosoftSQLServer"
+                      },
+                      {
+                        "field": "Microsoft.Compute/imageOffer",
+                        "in": [
+                          "VisualStudio",
+                          "visualstudio2019",
+                          "visualstudio2019latest",
+                          "visualstudio2019plustools",
+                          "visualstudio2022",
+                          "visualstudioplustools",
+                          "Windows",
+                          "windowsplustools"
+                        ]
+                      },
+                      {
+                        "field": "Microsoft.Compute/imageSKU",
+                        "in": [
+                          "VS-2015-Comm-VSU3-AzureSDK-29-WS2012R2",
+                          "VS-2015-Ent-VSU3-AzureSDK-29-WS2012R2",
+                          "VS-2017-Comm-Latest-WS2016",
+                          "VS-2017-Comm-WS2016",
+                          "VS-2017-Ent-Latest-WS2016",
+                          "VS-2017-Ent-WS2016",
+                          "vs-2019-ent-ws2019",
+                          "vs-2019-comm-latest-ws2019",
+                          "vs-2019-ent-latest-ws2019",
+                          "vs-2022-comm-latest-ws2022",
+                          "vs-2022-ent-latest-ws2022"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "allOf": [
+                      {
+                        "field": "Microsoft.Compute/imagePublisher",
+                        "equals": "MicrosoftDynamicsAX"
+                      },
+                      {
+                        "field": "Microsoft.Compute/imageOffer",
+                        "equals": "Dynamics"
+                      }
+                    ]
+                  },
+                  {
+                    "allOf": [
+                      {
+                        "field": "Microsoft.Compute/imagePublisher",
+                        "equals": "microsoft-ads"
+                      },
+                      {
+                        "field": "Microsoft.Compute/imageOffer",
+                        "equals": "windows-data-science-vm"
+                      }
+                    ]
                   }
                 ]
               }
