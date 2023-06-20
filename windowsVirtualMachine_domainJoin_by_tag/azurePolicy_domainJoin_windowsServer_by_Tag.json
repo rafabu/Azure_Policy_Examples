@@ -289,43 +289,6 @@
                     "allOf": [
                       {
                         "field": "Microsoft.Compute/imagePublisher",
-                        "equals": "MicrosoftSQLServer"
-                      },
-                      {
-                        "field": "Microsoft.Compute/imageOffer",
-                        "in": [
-                          "VisualStudio",
-                          "visualstudio2019",
-                          "visualstudio2019latest",
-                          "visualstudio2019plustools",
-                          "visualstudio2022",
-                          "visualstudioplustools",
-                          "Windows",
-                          "windowsplustools"
-                        ]
-                      },
-                      {
-                        "field": "Microsoft.Compute/imageSKU",
-                        "in": [
-                          "VS-2015-Comm-VSU3-AzureSDK-29-WS2012R2",
-                          "VS-2015-Ent-VSU3-AzureSDK-29-WS2012R2",
-                          "VS-2017-Comm-Latest-WS2016",
-                          "VS-2017-Comm-WS2016",
-                          "VS-2017-Ent-Latest-WS2016",
-                          "VS-2017-Ent-WS2016",
-                          "vs-2019-ent-ws2019",
-                          "vs-2019-comm-latest-ws2019",
-                          "vs-2019-ent-latest-ws2019",
-                          "vs-2022-comm-latest-ws2022",
-                          "vs-2022-ent-latest-ws2022"
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "allOf": [
-                      {
-                        "field": "Microsoft.Compute/imagePublisher",
                         "equals": "MicrosoftDynamicsAX"
                       },
                       {
@@ -343,6 +306,30 @@
                       {
                         "field": "Microsoft.Compute/imageOffer",
                         "equals": "windows-data-science-vm"
+                      }
+                    ]
+                  },
+                  {
+                    "allOf": [
+                      {
+                        "field": "Microsoft.Compute/imagePublisher",
+                        "equals": "microsoftvisualstudio"
+                      },
+                      {
+                        "field": "Microsoft.Compute/imageSKU",
+                        "in": [
+                          "VS-2015-Comm-VSU3-AzureSDK-29-WS2012R2",
+                          "VS-2015-Ent-VSU3-AzureSDK-29-WS2012R2",
+                          "VS-2017-Comm-Latest-WS2016",
+                          "VS-2017-Comm-WS2016",
+                          "VS-2017-Ent-Latest-WS2016",
+                          "VS-2017-Ent-WS2016",
+                          "vs-2019-comm-latest-ws2019",
+                          "vs-2019-ent-latest-ws2019",
+                          "vs-2019-ent-ws2019",
+                          "vs-2022-comm-latest-ws2022",
+                          "vs-2022-ent-latest-ws2022"
+                        ]
                       }
                     ]
                   }
