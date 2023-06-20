@@ -2,7 +2,7 @@
   "properties": {
     "policyType": "Custom",
     "mode": "Indexed",
-    "displayName": "[Custom] Windows Server Domain Join (by key vault) - based on tag value.",
+    "displayName": "[Custom] Windows VMSS Domain Join (by key vault) - based on tag value.",
     "description": "Deploy Windows Domain Join Extension with KeyVault configuration when the extension does not exist on a given windows Virtual Machine. Joins VM to domain at given OU while getting domain name and OU from resource tag either on resource or if not present the resource group. Join credentials are retrieved from key vault.",
     "metadata": {
       "version": "1.0.0",
@@ -74,7 +74,7 @@
                     "notEquals": ""
                   },
                   {
-                    "value": "[subscription().tags[parameters('domainOUPathTagName')]]",
+                    "value": "[subscription().tags[parameters('domainFQDNTagName')]]",
                     "notEquals": ""
                   }
                 ]
@@ -89,16 +89,15 @@
                     "value": "[resourceGroup().tags[parameters('domainOUPathTagName')]]",
                     "contains": "OU="
                   },
-                  
                   {
-                    "value": "[subscription().tags[parameters('domainOUPathTagName')]]",
-                    "contains": "OU="
+                  "value": "[subscription().tags[parameters('domainOUPathTagName')]]",
+                  "contains": "OU="
                   }
                 ]
               },
               {
                 "field": "type",
-                "equals": "Microsoft.Compute/virtualMachines"
+                "equals": "Microsoft.Compute/virtualMachineScaleSets"
               },
               {
                 "anyOf": [
@@ -351,7 +350,7 @@
       "then": {
         "effect": "[parameters('effect')]",
         "details": {
-          "type": "Microsoft.Compute/virtualMachines/extensions",
+          "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
           "roleDefinitionIds": [
             "/providers/Microsoft.Authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c"
           ],
@@ -359,11 +358,11 @@
           "existenceCondition": {
             "allOf": [
               {
-                "field": "Microsoft.Compute/virtualMachines/extensions/type",
+                "field": "Microsoft.Compute/virtualMachineScaleSets/extensions/type",
                 "equals": "JsonADDomainExtension"
               },
               {
-                "field": "Microsoft.Compute/virtualMachines/extensions/publisher",
+                "field": "Microsoft.Compute/virtualMachineScaleSets/extensions/publisher",
                 "equals": "Microsoft.Compute"
               }
             ]
@@ -395,10 +394,10 @@
                   }
                 },
                 "domainOUPath": {
-                  "value": "[if(greater(length(field(concat('tags[', parameters('domainOUPathTagName'), ']'))), 0), field(concat('tags[', parameters('domainOUPathTagName'), ']')), subscription().tags[parameters('domainOUPathTagName')])]"
+                  "value": "[if(greater(length(field(concat('tags[', parameters('domainOUPathTagName'), ']'))), 0), field(concat('tags[', parameters('domainOUPathTagName'), ']')), resourceGroup().tags[parameters('domainOUPathTagName')])]"
                 },
                 "domainFQDN": {
-                  "value": "[if(greater(length(field(concat('tags[', parameters('domainFQDNTagName'), ']'))), 0), field(concat('tags[', parameters('domainFQDNTagName'), ']')), subscription().tags[parameters('domainFQDNTagName')])]"
+                  "value": "[if(greater(length(field(concat('tags[', parameters('domainFQDNTagName'), ']'))), 0), field(concat('tags[', parameters('domainFQDNTagName'), ']')), resourceGroup().tags[parameters('domainFQDNTagName')])]"
                 },
                 "keyVaultResourceId": {
                   "value": "[parameters('keyVaultResourceId')]"
@@ -437,7 +436,7 @@
                 "resources": [
                   {
                     "apiVersion": "2022-11-01",
-                    "type": "Microsoft.Compute/virtualMachines/extensions",
+                    "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
                     "name": "[concat(variables('vmName'),'/joindomain')]",
                     "location": "[resourceGroup().location]",
                     "properties": {

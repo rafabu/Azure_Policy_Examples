@@ -72,6 +72,10 @@
                   {
                     "value": "[resourceGroup().tags[parameters('domainFQDNTagName')]]",
                     "notEquals": ""
+                  },
+                  {
+                    "value": "[subscription().tags[parameters('domainOUPathTagName')]]",
+                    "notEquals": ""
                   }
                 ]
               },
@@ -83,6 +87,10 @@
                   },
                   {
                     "value": "[resourceGroup().tags[parameters('domainOUPathTagName')]]",
+                    "contains": "OU="
+                  },
+                  {
+                    "value": "[subscription().tags[parameters('domainOUPathTagName')]]",
                     "contains": "OU="
                   }
                 ]
