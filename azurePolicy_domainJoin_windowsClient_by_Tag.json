@@ -219,10 +219,10 @@
                   }
                 },
                 "domainOUPath": {
-                  "value": "[if(greater(length(field(concat('tags[', parameters('domainOUPathTagName'), ']'))), 0), field(concat('tags[', parameters('domainOUPathTagName'), ']')), resourceGroup().tags[parameters('domainOUPathTagName')])]"
+                  "value": "[if(greater(length(field(concat('tags[', parameters('domainOUPathTagName'), ']'))), 0), field(concat('tags[', parameters('domainOUPathTagName'), ']')), if(greater(length(resourceGroup().tags[parameters('domainOUPathTagName')]), 0), resourceGroup().tags[parameters('domainOUPathTagName')], subscription().tags[parameters('domainOUPathTagName')]))]"
                 },
                 "domainFQDN": {
-                  "value": "[if(greater(length(field(concat('tags[', parameters('domainFQDNTagName'), ']'))), 0), field(concat('tags[', parameters('domainFQDNTagName'), ']')), resourceGroup().tags[parameters('domainFQDNTagName')])]"
+                  "value": "[if(greater(length(field(concat('tags[', parameters('domainFQDNTagName'), ']'))), 0), field(concat('tags[', parameters('domainFQDNTagName'), ']')), if(greater(length(resourceGroup().tags[parameters('domainFQDNTagName')]), 0), resourceGroup().tags[parameters('domainFQDNTagName')], subscription().tags[parameters('domainFQDNTagName')]))]"
                 },
                 "keyVaultResourceId": {
                   "value": "[parameters('keyVaultResourceId')]"
