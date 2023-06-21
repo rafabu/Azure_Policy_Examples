@@ -88,18 +88,33 @@
         "effect": "[parameters('effect')]",
         "details": {
           "type": "Microsoft.Authorization/policyAssignments",
-          "name": "[guid(parameters('policyDefinitionID'), field('id'))]",
-          "deploymentScope": "resourceGroup",
+          "deploymentScope": "subscription",
           "existenceScope": "subscription",
+          "existenceCondition": {
+            "allOf": [
+              {
+                "field": "Microsoft.Authorization/policyAssignments/scope",
+                "equals": "[field('id')]"
+              },
+              {
+                "field": "Microsoft.Authorization/policyAssignments/policyDefinitionId",
+                "equals": "[parameters('policyDefinitionID')]"
+              }
+            ]
+          },
           "evaluationDelay": "AfterProvisioningSuccess",
           "roleDefinitionIds": [
             "/providers/microsoft.authorization/roleDefinitions/36243c78-bf99-498c-9df9-86d9f8d28608",
             "/providers/microsoft.authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168"
           ],
           "deployment": {
+            "location": "eastus",
             "properties": {
               "mode": "incremental",
               "parameters": {
+                "resourceGroupName": {
+                  "value": "[field('name')]"
+                },
                 "policyAssignmentName": {
                   "value": "[guid(parameters('policyDefinitionID'), field('id'))]"
                 },
@@ -123,9 +138,19 @@
                 }
               },
               "template": {
-                "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json",
+                "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
                 "contentVersion": "1.0.0.0",
                 "parameters": {
+                  "resourceGroupName": {
+                    "type": "string"
+                  },
+                  "policyAssignmentID": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Azure resource ID of the Policy Assignment"
+                    },
+                    "defaultValue": "/subscriptions/73e7819b-1f47-457c-b6d0-ddcc1627c6ce/resourcegroups/sunday_number_07/providers/microsoft.authorization/policyassignments/d517783f-cdf6-5eb3-b92d-b84c013b855a"
+                  },
                   "policyAssignmentName": {
                     "type": "string",
                     "metadata": {
@@ -138,7 +163,7 @@
                     "metadata": {
                       "description": "GUID to uniquely identify the deployment of the assignment's RBAC permissions."
                     },
-                    "defaultValue": "[guid(parameters('policyDefinitionID'), parameters('policyAssignmentScope'), utcNow())]"
+                    "defaultValue": "[guid(parameters('policyDefinitionID'), parameters('policyAssignmentScope'), 'roleAssignments', utcNow())]"
                   },
                   "policyAssignmentLocation": {
                     "type": "string",
@@ -167,13 +192,19 @@
                     },
                     "defaultValue": {}
                   },
-                 
                   "policyDefinitionID": {
                     "type": "string",
                     "metadata": {
                       "displayName": "Policy or Initiative ID",
                       "description": "Specifies the ID of the policy definition or policy set definition being assigned. Built-in as '/providers/Microsoft.Authorization/policyDefinitions/{guid}'."
                     }
+                  },
+                  "policyAssignmentRemediationName": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Name of the Policy Assignment Remediation"
+                    },
+                    "defaultValue": "[guid(parameters('policyDefinitionID'), parameters('policyAssignmentScope'), 'remediations', utcNow())]"
                   },
                   "policyAssignmentRemediationResourceDiscoveryMode": {
                     "type": "string",
@@ -189,26 +220,90 @@
                 },
                 "resources": [
                   {
-                    "type": "Microsoft.Authorization/policyAssignments",
+                    "type": "Microsoft.Resources/deployments",
+                    "apiVersion": "2022-09-01",
                     "name": "[parameters('policyAssignmentName')]",
-                    "apiVersion": "2022-06-01",
-                    "location": "[parameters('policyAssignmentLocation')]",
-                    "identity": {
-                      "type": "SystemAssigned"
-                    },
+                    "resourceGroup": "[parameters('resourceGroupName')]",
                     "properties": {
-                      "scope": "[parameters('policyAssignmentScope')]",
-                      "policyDefinitionId": "[parameters('policyDefinitionID')]",
-                      "displayName": "[parameters('policyAssignmentDisplayName')]",
-                      "parameters": "[parameters('policyAssignmentParameters')]",
-                      "enforcementMode": "Default"
-                  
+                      "expressionEvaluationOptions": {
+                        "scope": "inner"
+                      },
+                      "mode": "Incremental",
+                      "parameters": {
+                        "policyAssignmentName": {
+                          "value": "[parameters('policyAssignmentName')]"
+                        },
+                        "policyAssignmentScope": {
+                          "value": "[parameters('policyAssignmentScope')]"
+                        },
+                        "policyAssignmentLocation": {
+                          "value": "[parameters('policyAssignmentLocation')]"
+                        },
+                        "policyDefinitionID": {
+                          "value": "[parameters('policyDefinitionID')]"
+                        },
+                        "policyAssignmentDisplayName": {
+                          "value": "[parameters('policyAssignmentDisplayName')]"
+                        },
+                        "policyAssignmentParameters": {
+                          "value": "[parameters('policyAssignmentParameters')]"
+                        }
+                      },
+                      "template": {
+                        "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                        "contentVersion": "1.0.0.0",
+                        "parameters": {
+                          "policyAssignmentName": {
+                            "type": "string"
+                          },
+                          "policyAssignmentScope": {
+                            "type": "string"
+                          },
+                          "policyAssignmentLocation": {
+                            "type": "string"
+                          },
+                          "policyDefinitionID": {
+                            "type": "string"
+                          },
+                          "policyAssignmentDisplayName": {
+                            "type": "string"
+                          },
+                          "policyAssignmentParameters": {
+                            "type": "object"
+                          }
+                        },
+                        "resources": [
+                          {
+                            "type": "Microsoft.Authorization/policyAssignments",
+                            "name": "[parameters('policyAssignmentName')]",
+                            "location": "[parameters('policyAssignmentLocation')]",
+                            "apiVersion": "2022-06-01",
+                            "identity": {
+                              "type": "SystemAssigned"
+                            },
+                            "properties": {
+                              "scope": "[parameters('policyAssignmentScope')]",
+                              "policyDefinitionId": "[parameters('policyDefinitionID')]",
+                              "displayName": "[parameters('policyAssignmentDisplayName')]",
+                              "parameters": "[parameters('policyAssignmentParameters')]",
+                              "enforcementMode": "Default"
+                            }
+                          }
+                        ],
+                        "outputs": {
+                          "principalId": {
+                            "type": "string",
+                            "value": "[reference(resourceId('Microsoft.Authorization/policyAssignments', parameters('policyAssignmentName')), '2022-06-01', 'Full').identity.principalId]"
+                          }
+                        }
+                      }
                     }
                   },
                   {
                     "type": "Microsoft.Resources/deployments",
                     "apiVersion": "2022-09-01",
                     "name": "[parameters('policyAssignmentRoleAssignmentsName')]",
+                    "resourceGroup": "[parameters('resourceGroupName')]",
                     "properties": {
                       "expressionEvaluationOptions": {
                         "scope": "inner"
@@ -222,7 +317,7 @@
                           "value": "[reference(parameters('policyDefinitionID'), '2021-06-01', 'Full').properties.policyRule.then.details.roleDefinitionIds]"
                         },
                         "principalId": {
-                          "value": "[reference(resourceId('Microsoft.Authorization/policyAssignments', parameters('policyAssignmentName')), '2022-06-01', 'Full').identity.principalId]"
+                          "value": "[reference(parameters('policyAssignmentName'), '2022-09-01', 'Full').properties.outputs.principalId.value]"
                         },
                         "description": {
                           "value": "[concat('Azure Policy Assignment for policy ', parameters('policyDefinitionID'))]"
@@ -266,26 +361,86 @@
                       }
                     },
                     "dependsOn": [
-                      "[resourceId('Microsoft.Authorization/policyAssignments', parameters('policyAssignmentName'))]"
+                      "[parameters('policyAssignmentName')]"
                     ]
                   },
                   {
-                    "type": "Microsoft.PolicyInsights/remediations",
-                    "apiVersion": "2021-10-01",
-                    "name": "[parameters('policyAssignmentName')]",
+                    "type": "Microsoft.Resources/deployments",
+                    "apiVersion": "2022-09-01",
+                    "name": "[parameters('policyAssignmentRemediationName')]",
+                    "resourceGroup": "[parameters('resourceGroupName')]",
                     "properties": {
-                      "policyAssignmentId": "[resourceId('Microsoft.Authorization/policyAssignments', parameters('policyAssignmentName'))]",
-                      "filters": {},
-                      "resourceDiscoveryMode": "[parameters('policyAssignmentRemediationResourceDiscoveryMode')]",
-                      "resourceCount": 512,
-                      "parallelDeployments": 10
+                      "expressionEvaluationOptions": {
+                        "scope": "inner"
+                      },
+                      "mode": "Incremental",
+                      "parameters": {
+                        "name": {
+                          "value": "[parameters('policyAssignmentRemediationName')]"
+                        },
+                        "location": {
+                          "value": "[parameters('policyAssignmentLocation')]"
+                        },
+                        "policyAssignmentId": {
+                           "value": "[reference(parameters('policyAssignmentName'), '2022-09-01', 'Full').properties.outputResources[0].id]"
+                        },
+                        "resourceDiscoveryMode": {
+                          "value": "[parameters('policyAssignmentRemediationResourceDiscoveryMode')]"
+                        }
+                      },
+                      "template": {
+                        "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                        "contentVersion": "1.0.0.0",
+                        "parameters": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "location": {
+                            "type": "string"
+                          },
+                          "policyAssignmentId": {
+                            "type": "string"
+                          },
+                          "resourceDiscoveryMode": {
+                            "type": "string"
+                          }
+                        },
+                        "resources": [
+                          {
+                            "type": "Microsoft.PolicyInsights/remediations",
+                            "apiVersion": "2021-10-01",
+                            "name": "[parameters('name')]",
+                            "properties": {
+                              "policyAssignmentId": "[parameters('policyAssignmentId')]",
+                              "filters": {},
+                              "resourceDiscoveryMode": "[parameters('resourceDiscoveryMode')]",
+                              "resourceCount": 512,
+                              "parallelDeployments": 10
+                            }
+                          }
+                        ],
+                        "outputs": {}
+                      }
                     },
                     "dependsOn": [
-                      "[resourceId('Microsoft.Resources/deployments', parameters('policyAssignmentRoleAssignmentsName'))]"
+                      "[parameters('policyAssignmentRoleAssignmentsName')]"
                     ]
                   }
                 ],
-                "outputs": {}
+                "outputs": {
+                  "policyAssignmentPrincipalId": {
+                    "type": "string",
+                    "value": "[reference(parameters('policyAssignmentName'), '2022-09-01', 'Full').properties.outputs.principalId.value]"
+                  },
+                  "policyAssignmentId": {
+                    "type": "string",
+                    "value": "[reference(parameters('policyAssignmentName'), '2022-09-01', 'Full').properties.outputResources[0].id]"
+                  },
+                  "policyAssignmentRemediationId": {
+                    "type": "string",
+                    "value": "[reference(parameters('policyAssignmentRemediationName'), '2022-09-01', 'Full').properties.outputResources[0].id]"
+                  }
+                }
               }
             }
           }
