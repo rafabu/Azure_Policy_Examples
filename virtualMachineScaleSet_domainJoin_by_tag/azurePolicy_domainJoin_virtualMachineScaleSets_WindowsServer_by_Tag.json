@@ -47,7 +47,7 @@
           "displayName": "Windows AD Domain Name Tag Name",
           "description": "Name of the tag that defines the Windows AD Domain Name. Tag value must contain the FQDN of the Windows Domain."
         },
-        "defaultValue": "ccc-windows-domain-fqdn"
+        "defaultValue": "cccWindowsDomainFQDN"
       },
       "domainOUPathTagName": {
         "type": "String",
@@ -55,7 +55,7 @@
           "displayName": "domainOUPath",
           "description": "Name of the tag that defines the Windows AD OU the computer account is created in. Tag value must contain the DN of the OU (with spaces)."
         },
-        "defaultValue": "ccc-windows-domain-oupath"
+        "defaultValue": "cccWindowsDomainOUPath"
       }
     },
     "policyRule": {
