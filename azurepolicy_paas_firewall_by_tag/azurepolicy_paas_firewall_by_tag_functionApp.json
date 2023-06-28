@@ -1,0 +1,108 @@
+{
+    "properties": {
+        "displayName": "[Custom] Configure Function Apps public network access (PaaS firewall) - based on tag value.",
+        "description": "Disable public network access for your App Services so that it is not accessible over the public internet. This can reduce data leakage risks. Learn more at: https://aka.ms/app-service-private-endpoint. Based on built-in policy 'cd794351-e536-40f4-9750-503a463d8cad'",
+        "policyType": "Custom",
+        "mode": "Indexed",
+        "metadata": {
+            "version": "1.0.0",
+            "category": "App Service"
+        },
+        "parameters": {
+            "effect": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Effect",
+                    "description": "Enable or disable the execution of the policy"
+                },
+                "allowedValues": [
+                    "Modify",
+                    "Disabled"
+                ],
+                "defaultValue": "Modify"
+            },
+            "paasFirewallEnableTagName": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "PaaS Firewall Enable Tag Name",
+                    "description": "Name of the tag that enable or disable the PaaS firewall. Value must be 'Enable' or 'Disable'."
+                },
+                "defaultValue": "cccPaaSFirewall"
+            }
+        },
+        "policyRule": {
+            "if": {
+                "allOf": [
+                    {
+                        "anyOf": [
+                            {
+                                "field": "[concat('tags[', parameters('paasFirewallEnableTagName'), ']')]",
+                                "in": [
+                                    "disable",
+                                    "disabled",
+                                    "enable",
+                                    "enabled"
+                                ]
+                            },
+                            {
+                                "value": "[resourceGroup().tags[parameters('paasFirewallEnableTagName')]]",
+                                "in": [
+                                    "disable",
+                                    "disabled",
+                                    "enable",
+                                    "enabled"
+                                ]
+                            },
+                            {
+                                "value": "[subscription().tags[parameters('paasFirewallEnableTagName')]]",
+                                "in": [
+                                    "disable",
+                                    "disabled",
+                                    "enable",
+                                    "enabled"
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "field": "type",
+                        "equals": "Microsoft.Web/sites"
+                    },
+                    {
+                        "field": "kind",
+                        "contains": "functionapp"
+                    },
+                    {
+                        "anyOf": [
+                            {
+                                "field": "Microsoft.Web/sites/publicNetworkAccess",
+                                "exists": "false"
+                            },
+                            {
+                                "field": "Microsoft.Web/sites/publicNetworkAccess",
+                                "notEquals": "[if(contains(toLower(if(greater(length(field(concat('tags[', parameters('paasFirewallEnableTagName'), ']'))), 0), field(concat('tags[', parameters('paasFirewallEnableTagName'), ']')), if(greater(length(resourceGroup().tags[parameters('paasFirewallEnableTagName')]), 0), resourceGroup().tags[parameters('paasFirewallEnableTagName')], subscription().tags[parameters('paasFirewallEnableTagName')]))), 'enable'), 'Disabled', 'Enabled')]"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "then": {
+                "effect": "[parameters('effect')]",
+                "details": {
+                    "conflictEffect": "audit",
+                    "roleDefinitionIds": [
+                        "/providers/microsoft.authorization/roleDefinitions/de139f84-1756-47ae-9be6-808fbbe84772",
+                        "/providers/microsoft.authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7"
+                    ],
+                    "operations": [
+                        {
+                            "operation": "addOrReplace",
+                            "field": "Microsoft.Web/sites/publicNetworkAccess",
+                            "value": "[if(contains(toLower(if(greater(length(field(concat('tags[', parameters('paasFirewallEnableTagName'), ']'))), 0), field(concat('tags[', parameters('paasFirewallEnableTagName'), ']')), if(greater(length(resourceGroup().tags[parameters('paasFirewallEnableTagName')]), 0), resourceGroup().tags[parameters('paasFirewallEnableTagName')], subscription().tags[parameters('paasFirewallEnableTagName')]))), 'enable'), 'Disabled', 'Enabled')]"
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}
