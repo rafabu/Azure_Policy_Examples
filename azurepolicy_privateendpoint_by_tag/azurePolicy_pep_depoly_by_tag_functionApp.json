@@ -1,4 +1,5 @@
 {
+    "name": "471c5c8e-a7eb-4b86-9007-8b97e94d2489",
     "properties": {
         "displayName": "[Custom] Configure Web Apps to use a private link connection - based on tag value",
         "policyType": "Custom",

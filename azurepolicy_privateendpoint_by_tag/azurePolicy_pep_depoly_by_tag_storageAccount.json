@@ -1,4 +1,5 @@
 {
+    "name": "0eebd2f7-7edd-43b4-bf3f-06a41842c49d",
     "properties": {
         "displayName": "[Custom] Configure Storage Account to use a private link connection - based on tag value",
         "policyType": "Custom",

@@ -1,4 +1,5 @@
 {
+    "name": "cccPaaSFirewall-tag-webapps",
     "properties": {
         "displayName": "[Custom] Configure Web Apps public network access (PaaS firewall) - based on tag value.",
         "description": "Disable public network access for your App Services so that it is not accessible over the public internet. This can reduce data leakage risks. Learn more at: https://aka.ms/app-service-private-endpoint. Based on built-in policy '2374605e-3e0b-492b-9046-229af202562c'",

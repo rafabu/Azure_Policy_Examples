@@ -1,4 +1,5 @@
 {
+    "name": "c8d00618-9af5-4782-84a9-18a8865ebb56",
     "properties": {
         "displayName": "[Custom] Configure Azure SQL Server to enable private endpoint connections - based on tag value",
         "policyType": "Custom",

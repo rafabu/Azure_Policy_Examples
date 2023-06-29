@@ -1,4 +1,5 @@
 {
+    "name": "cccPaaSFirewall-tag-sqlservers",
     "properties": {
         "displayName": "[Custom] Configure Azure SQL Server to disable public network access (PaaS firewall) - based on tag value.",
         "description": "Disabling the public network access property shuts down public connectivity such that Azure SQL Server can only be accessed from a private endpoint. This configuration disables the public network access for all databases under the Azure SQL Server. Based on built-in policy '28b0b1e5-17ba-4963-a7a4-5a1ab4400a0b'",
