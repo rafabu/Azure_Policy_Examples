@@ -2,7 +2,7 @@
     "name": "cccPaaSFirewall-tag-initiative",
     "properties": {
         "policyType": "Custom",
-        "displayName": "[Custom] Configure resource public network access (PaaS firewall)",
+        "displayName": "[Custom] Configure resource public network access (PaaS firewall) - based on tag value.",
         "description": "Assures that public internet access is disabled on PaaS resources. Considers resource tag value.",
         "metadata": {
             "version": "1.0.0",

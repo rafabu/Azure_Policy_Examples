@@ -1,13 +1,13 @@
 {
-    "name": "c8d00618-9af5-4782-84a9-18a8865ebb56",
+    "name": "cccPaaSprivateendpoint-tag-webapps",
     "properties": {
-        "displayName": "[Custom] Configure Azure SQL Server to enable private endpoint connections - based on tag value",
+        "displayName": "[Custom] Configure Web Apps to use a private link connection - based on tag value",
         "policyType": "Custom",
-        "mode": "Indexed",
-        "description": "Private endpoints connect your virtual network to Azure services without a public IP address at the source or destination. By mapping private endpoints to your web app or function app, you can reduce data leakage risks. Private Endpoint are supported on vNet-integrated sites only. Based on built-in policy '8e8ca470-d980-4831-99e6-dc70d9f6af87'",
+        "mode": "All",
+        "description": "Private endpoints connect your virtual network to Azure services without a public IP address at the source or destination. By mapping private endpoints to your web app, you can reduce data leakage risks. Private Endpoint are supported on vNet-integrated sites only. Based on built-in policy '9f766f00-8d11-464e-80e1-4091d7874074'",
         "metadata": {
             "version": "1.0.0",
-            "category": "SQL"
+            "category": "App Service"
         },
         "parameters": {
             "privateEndpointSubnetId": {
@@ -38,9 +38,9 @@
                     "description": "Type of sub-resource for the resource selected above, that your private endpoint will be able to access"
                 },
                 "allowedValues": [
-                    "sqlServer"
+                    "sites"
                 ],
-                "defaultValue": "sqlServer"
+                "defaultValue": "sites"
             },
             "paasPrivateLinkEnableTagName": {
                 "type": "String",
@@ -56,7 +56,18 @@
                 "allOf": [
                     {
                         "field": "type",
-                        "equals": "Microsoft.Sql/servers"
+                        "equals": "Microsoft.Web/sites"
+                    },
+                    {
+
+                        "field": "kind",
+                        "contains": "functionapp"
+                    
+                    },
+                    {
+                        "field": "Microsoft.Web/sites/virtualNetworkSubnetId",
+                        "contains": "/Microsoft.Network/virtualNetworks/"
+
                     },
                     {
                         "value": "[toLower(if(greater(length(field(concat('tags[', parameters('paasPrivateLinkEnableTagName'), ']'))), 0), field(concat('tags[', parameters('paasPrivateLinkEnableTagName'), ']')), if(greater(length(resourceGroup().tags[parameters('paasPrivateLinkEnableTagName')]), 0), resourceGroup().tags[parameters('paasPrivateLinkEnableTagName')], subscription().tags[parameters('paasPrivateLinkEnableTagName')])))]",
@@ -70,11 +81,11 @@
             "then": {
                 "effect": "[parameters('effect')]",
                 "details": {
-                    "type": "Microsoft.Sql/servers/privateEndpointConnections",
+                    "type": "Microsoft.Web/sites/privateEndpointConnections",
                     "existenceCondition": {
                         "allOf": [
                             {
-                                "field": "Microsoft.Sql/servers/privateEndpointConnections/privateLinkServiceConnectionState.status",
+                                "field": "Microsoft.Web/sites/privateEndpointConnections/privateLinkServiceConnectionState.status",
                                 "equals": "Approved"
                             },
                             {
@@ -86,7 +97,7 @@
                     "evaluationDelay": "AfterProvisioningSuccess",
                     "roleDefinitionIds": [
                         "/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7",
-                        "/providers/Microsoft.Authorization/roleDefinitions/6d8ee4ec-f05a-4a1d-8b00-a9b17e38b437"
+                        "/providers/Microsoft.Authorization/roleDefinitions/de139f84-1756-47ae-9be6-808fbbe84772"
                     ],
                     "deployment": {
                         "properties": {

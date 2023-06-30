@@ -3,7 +3,7 @@
         "displayName": "[Custom] Add members to built-in security groups on Windows Domain joined computer that used JsonADDomainExtension",
         "description": "Adds user or group accounts to local windows security group using Add-LocalGroupMember. In order for the policy effect to work, the VM must have a extension JsonADDomainExtension present.",
         "policyType": "Custom",
-        "mode": "Indexed",
+        "mode": "All",
         "metadata": {
             "category": "Guest Configuration",
             "version": "1.0.0"

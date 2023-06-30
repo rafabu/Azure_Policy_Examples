@@ -3,7 +3,7 @@
         "displayName": "[Custom] Add specified WindowsFeatures (Features) on Windows Server",
         "description": "Adds Optional Features using Install-WindowsFeature. E.g. this may be used to add RSAT tools. Note that this will never reboot the target computer as this is not supported by policy.",
         "policyType": "Custom",
-        "mode": "Indexed",
+        "mode": "All",
         "metadata": {
             "category": "Guest Configuration",
             "version": "1.0.0"

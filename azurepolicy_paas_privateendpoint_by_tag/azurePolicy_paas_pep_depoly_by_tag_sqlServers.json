@@ -1,13 +1,13 @@
 {
-    "name": "0eebd2f7-7edd-43b4-bf3f-06a41842c49d",
+    "name": "cccPaaSprivateendpoint-tag-sqlservers",
     "properties": {
-        "displayName": "[Custom] Configure Storage Account to use a private link connection - based on tag value",
+        "displayName": "[Custom] Configure Azure SQL Server to enable private endpoint connections - based on tag value",
         "policyType": "Custom",
-        "mode": "Indexed",
-        "description": "Private endpoints connect your virtual network to Azure services without a public IP address at the source or destination. By mapping private endpoints to your storage account, you can reduce data leakage risks. Based on built-in policy '9f766f00-8d11-464e-80e1-4091d7874074'",
+        "mode": "All",
+        "description": "Private endpoints connect your virtual network to Azure services without a public IP address at the source or destination. By mapping private endpoints to your web app or function app, you can reduce data leakage risks. Private Endpoint are supported on vNet-integrated sites only. Based on built-in policy '8e8ca470-d980-4831-99e6-dc70d9f6af87'",
         "metadata": {
             "version": "1.0.0",
-            "category": "Storage"
+            "category": "SQL"
         },
         "parameters": {
             "privateEndpointSubnetId": {
@@ -17,27 +17,6 @@
                     "description": "The subnetId that private endpoint connections should link to",
                     "strongType": "Microsoft.Network/virtualNetworks/subnets"
                 }
-            },
-            "targetSubResource": {
-                "type": "String",
-                "metadata": {
-                    "displayName": "Target sub-resource",
-                    "description": "Type of sub-resource for the resource selected above, that your private endpoint will be able to access"
-                },
-                "allowedValues": [
-                    "blob",
-                    "blob_secondary",
-                    "table",
-                    "table_secondary",
-                    "queue",
-                    "queue_secondary",
-                    "file",
-                    "web",
-                    "web_secondary",
-                    "dfs",
-                    "dfs_secondary"
-                ],
-                "defaultValue": "blob"
             },
             "effect": {
                 "type": "String",
@@ -51,6 +30,17 @@
                     "Disabled"
                 ],
                 "defaultValue": "DeployIfNotExists"
+            },
+            "targetSubResource": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Target sub-resource",
+                    "description": "Type of sub-resource for the resource selected above, that your private endpoint will be able to access"
+                },
+                "allowedValues": [
+                    "sqlServer"
+                ],
+                "defaultValue": "sqlServer"
             },
             "paasPrivateLinkEnableTagName": {
                 "type": "String",
@@ -66,16 +56,7 @@
                 "allOf": [
                     {
                         "field": "type",
-                        "equals": "Microsoft.Storage/storageAccounts"
-                    },
-                    {
-                        "field": "kind",
-                        "in": [
-                            "StorageV2",
-                            "BlobStorage",
-                            "BlockBlobStorage",
-                            "FileStorage"
-                        ]
+                        "equals": "Microsoft.Sql/servers"
                     },
                     {
                         "value": "[toLower(if(greater(length(field(concat('tags[', parameters('paasPrivateLinkEnableTagName'), ']'))), 0), field(concat('tags[', parameters('paasPrivateLinkEnableTagName'), ']')), if(greater(length(resourceGroup().tags[parameters('paasPrivateLinkEnableTagName')]), 0), resourceGroup().tags[parameters('paasPrivateLinkEnableTagName')], subscription().tags[parameters('paasPrivateLinkEnableTagName')])))]",
@@ -89,11 +70,11 @@
             "then": {
                 "effect": "[parameters('effect')]",
                 "details": {
-                    "type": "Microsoft.Storage/storageAccounts/privateEndpointConnections",
+                    "type": "Microsoft.Sql/servers/privateEndpointConnections",
                     "existenceCondition": {
                         "allOf": [
                             {
-                                "field": "Microsoft.Storage/storageAccounts/privateEndpointConnections/privateLinkServiceConnectionState.status",
+                                "field": "Microsoft.Sql/servers/privateEndpointConnections/privateLinkServiceConnectionState.status",
                                 "equals": "Approved"
                             },
                             {
@@ -105,7 +86,7 @@
                     "evaluationDelay": "AfterProvisioningSuccess",
                     "roleDefinitionIds": [
                         "/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7",
-                        "/providers/Microsoft.Authorization/roleDefinitions/17d1049b-9a84-46fb-8f53-869881c3d3ab"
+                        "/providers/Microsoft.Authorization/roleDefinitions/6d8ee4ec-f05a-4a1d-8b00-a9b17e38b437"
                     ],
                     "deployment": {
                         "properties": {

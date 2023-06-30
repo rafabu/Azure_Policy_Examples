@@ -1,0 +1,218 @@
+{
+    "name": "cccPaaSprivateendpoint-dns-initiative",
+    "properties": {
+        "policyType": "Custom",
+        "displayName": "[Custom] Configure a private DNS Zone IDs for resources",
+        "description": "This policy initiative is a group of policies that ensures private endpoints to Azure PaaS services are integrated with Azure Private DNS zones - based on ALZ's 'Deploy-Private-DNS-Zones'",
+        "metadata": {
+            "version": "1.0.0",
+            "category": "Network"
+        },
+        "parameters": {
+            "azureAppServicesPrivateDnsZoneId": {
+                "type": "string",
+                "metadata": {
+                    "displayName": "id privatelink.azurewebsites.net",
+                    "strongType": "Microsoft.Network/privateDnsZones",
+                    "description": "Private DNS Zone Id of privatelink.azurewebsites.net"
+                }
+            },
+            "azureKeyVaultPrivateDnsZoneId": {
+                "type": "string",
+                "metadata": {
+                    "displayName": "id privatelink.vaultcore.azure.net",
+                    "strongType": "Microsoft.Network/privateDnsZones",
+                    "description": "Private DNS Zone Id of privatelink.vaultcore.azure.net"
+                }
+            },
+            "azureStorageBlobPrivateDnsZoneId": {
+                "type": "string",
+                "metadata": {
+                    "displayName": "id privatelink.blob.core.windows.net",
+                    "strongType": "Microsoft.Network/privateDnsZones",
+                    "description": "Private DNS Zone Id of privatelink.blob.core.windows.net"
+                }
+            },
+            "azureStorageDFSPrivateDnsZoneId": {
+                "type": "string",
+                "metadata": {
+                    "displayName": "id privatelink.dfs.core.windows.net",
+                    "strongType": "Microsoft.Network/privateDnsZones",
+                    "description": "Private DNS Zone Id of privatelink.dfs.core.windows.net"
+                }
+            },
+            "azureStorageFilePrivateDnsZoneId": {
+                "type": "string",
+                "metadata": {
+                    "displayName": "id privatelink.file.core.windows.net",
+                    "strongType": "Microsoft.Network/privateDnsZones",
+                    "description": "Private DNS Zone Id of privatelink.file.core.windows.net"
+                }
+            },
+            "azureStorageQueuePrivateDnsZoneId": {
+                "type": "string",
+                "metadata": {
+                    "displayName": "id privatelink.queue.core.windows.net",
+                    "strongType": "Microsoft.Network/privateDnsZones",
+                    "description": "Private DNS Zone Id of privatelink.queue.core.windows.net"
+                }
+            },
+            "azureStorageTablePrivateDnsZoneId": {
+                "type": "string",
+                "metadata": {
+                    "displayName": "id privatelink.table.core.windows.net",
+                    "strongType": "Microsoft.Network/privateDnsZones",
+                    "description": "Private DNS Zone Id of privatelink.table.core.windows.net"
+                }
+            },
+            "azureStorageStaticWebPrivateDnsZoneId": {
+                "type": "string",
+                "metadata": {
+                    "displayName": "id privatelink.web.core.windows.net",
+                    "strongType": "Microsoft.Network/privateDnsZones",
+                    "description": "Private DNS Zone Id of privatelink.web.core.windows.net"
+                }
+            },
+            "azureSqlServerPrivateDnsZoneId": {
+                "type": "string",
+                "metadata": {
+                    "displayName": "id privatelink.database.windows.net",
+                    "strongType": "Microsoft.Network/privateDnsZones",
+                    "description": "Private DNS Zone Id of privatelink.database.windows.net"
+                }
+            },
+            "effect": {
+                "type": "string",
+                "metadata": {
+                    "displayName": "Effect",
+                    "description": "Enable or disable the execution of the policy"
+                },
+                "allowedValues": [
+                    "DeployIfNotExists",
+                    "Disabled"
+                ],
+                "defaultValue": "DeployIfNotExists"
+            }
+        },
+        "policyDefinitions": [
+            {
+                "policyDefinitionReferenceId": "<cccPaaSprivateendpoint-dns-appservices-sites>_1",
+                "policyDefinitionId": "<policyDefinitionId>",
+                "parameters": {
+                    "privateDnsZoneId": {
+                        "value": "[parameters('azureAppServicesPrivateDnsZoneId')]"
+                    },
+                    "effect": {
+                        "value": "[parameters('effect')]"
+                    }
+                },
+                "groupNames": []
+            },
+            {
+                "policyDefinitionReferenceId": "<cccPaaSprivateendpoint-dns-keyvaults-vault>_1",
+                "policyDefinitionId": "<policyDefinitionId>",
+                "parameters": {
+                    "privateDnsZoneId": {
+                        "value": "[parameters('azureKeyVaultPrivateDnsZoneId')]"
+                    },
+                    "effect": {
+                        "value": "[parameters('effect')]"
+                    }
+                },
+                "groupNames": []
+            },
+            {
+                "policyDefinitionReferenceId": "<cccPaaSprivateendpoint-dns-storageaccounts-blob>_1",
+                "policyDefinitionId": "<policyDefinitionId>",
+                "parameters": {
+                    "privateDnsZoneId": {
+                        "value": "[parameters('azureStorageBlobPrivateDnsZoneId')]"
+                    },
+                    "effect": {
+                        "value": "[parameters('effect')]"
+                    }
+                },
+                "groupNames": []
+            },
+            {
+                "policyDefinitionReferenceId": "<cccPaaSprivateendpoint-dns-storageaccounts-dfs>_1",
+                "policyDefinitionId": "<policyDefinitionId>",
+                "parameters": {
+                    "privateDnsZoneId": {
+                        "value": "[parameters('azureStorageDFSPrivateDnsZoneId')]"
+                    },
+                    "effect": {
+                        "value": "[parameters('effect')]"
+                    }
+                },
+                "groupNames": []
+            },
+            {
+                "policyDefinitionReferenceId": "<cccPaaSprivateendpoint-dns-storageaccounts-file>_1",
+                "policyDefinitionId": "<policyDefinitionId>",
+                "parameters": {
+                    "privateDnsZoneId": {
+                        "value": "[parameters('azureStorageFilePrivateDnsZoneId')]"
+                    },
+                    "effect": {
+                        "value": "[parameters('effect')]"
+                    }
+                },
+                "groupNames": []
+            },
+            {
+                "policyDefinitionReferenceId": "<cccPaaSprivateendpoint-dns-storageaccounts-queue>_1",
+                "policyDefinitionId": "<policyDefinitionId>",
+                "parameters": {
+                    "privateDnsZoneId": {
+                        "value": "[parameters('azureStorageQueuePrivateDnsZoneId')]"
+                    },
+                    "effect": {
+                        "value": "[parameters('effect')]"
+                    }
+                },
+                "groupNames": []
+            },
+            {
+                "policyDefinitionReferenceId": "<cccPaaSprivateendpoint-dns-storageaccounts-table>_1",
+                "policyDefinitionId": "<policyDefinitionId>",
+                "parameters": {
+                    "privateDnsZoneId": {
+                        "value": "[parameters('azureStorageTablePrivateDnsZoneId')]"
+                    },
+                    "effect": {
+                        "value": "[parameters('effect')]"
+                    }
+                },
+                "groupNames": []
+            },
+            {
+                "policyDefinitionReferenceId": "<cccPaaSprivateendpoint-dns-storageaccounts-web>_1",
+                "policyDefinitionId": "<policyDefinitionId>",
+                "parameters": {
+                    "privateDnsZoneId": {
+                        "value": "[parameters('azureStorageStaticWebPrivateDnsZoneId')]"
+                    },
+                    "effect": {
+                        "value": "[parameters('effect')]"
+                    }
+                },
+                "groupNames": []
+            },
+            {
+                "policyDefinitionReferenceId": "<cccPaaSprivateendpoint-dns-sqlservers-sqlserver>_1",
+                "policyDefinitionId": "<policyDefinitionId>",
+                "parameters": {
+                    "privateDnsZoneId": {
+                        "value": "[parameters('azureSqlServerPrivateDnsZoneId')]"
+                    },
+                    "effect": {
+                        "value": "[parameters('effect')]"
+                    }
+                },
+                "groupNames": []
+            }
+        ],
+        "policyDefinitionGroups": null
+    }
+}

@@ -1,13 +1,13 @@
 {
-    "name": "cccPaaSFirewall-tag-storageaccounts",
+    "name": "cccPaaSFirewall-tag-keyvaults",
     "properties": {
-        "displayName": "[Custom] Configure Storage Account public network access (PaaS firewall) - based on tag value.",
-        "description": "To improve the security of Storage Accounts, ensure that they aren't exposed to the public internet and can only be accessed from a private endpoint. Disable the public network access property as described in https://aka.ms/storageaccountpublicnetworkaccess. This option disables access from any public address space outside the Azure IP range, and denies all logins that match IP or virtual network-based firewall rules. This reduces data leakage risks.",
+        "displayName": "[Custom] Configure Azure Key Vault to disable public network access (PaaS firewall) - based on tag value.",
+        "description": "Enable the key vault firewall so that the key vault is not accessible by default to any public IPs. You can then configure specific IP ranges to limit access to those networks. Learn more at: https://docs.microsoft.com/azure/key-vault/general/network-security. Based on built-in policy 'ac673a9a-f77d-4846-b2d8-a57f8e1c01dc'",
         "policyType": "Custom",
         "mode": "All",
         "metadata": {
             "version": "1.0.0",
-            "category": "Storage"
+            "category": "Key Vault"
         },
         "parameters": {
             "effect": {
@@ -67,14 +67,14 @@
                     },
                     {
                         "field": "type",
-                        "equals": "Microsoft.Storage/storageAccounts"
+                        "equals": "Microsoft.KeyVault/vaults"
                     },
                     {
-                        "field": "Microsoft.Storage/storageAccounts/networkAcls.defaultAction",
+                        "field": "Microsoft.KeyVault/vaults/networkAcls.defaultAction",
                         "notEquals": "[if(contains(toLower(if(greater(length(field(concat('tags[', parameters('paasFirewallEnableTagName'), ']'))), 0), field(concat('tags[', parameters('paasFirewallEnableTagName'), ']')), if(greater(length(resourceGroup().tags[parameters('paasFirewallEnableTagName')]), 0), resourceGroup().tags[parameters('paasFirewallEnableTagName')], subscription().tags[parameters('paasFirewallEnableTagName')]))), 'enable'), 'Deny', 'Allow')]"
                     },
                     {
-                        "field": "Microsoft.Storage/storageAccounts/publicNetworkAccess",
+                        "field": "Microsoft.KeyVault/vaults/publicNetworkAccess",
                         "notEquals": "[if(contains(toLower(if(greater(length(field(concat('tags[', parameters('paasFirewallEnableTagName'), ']'))), 0), field(concat('tags[', parameters('paasFirewallEnableTagName'), ']')), if(greater(length(resourceGroup().tags[parameters('paasFirewallEnableTagName')]), 0), resourceGroup().tags[parameters('paasFirewallEnableTagName')], subscription().tags[parameters('paasFirewallEnableTagName')]))), 'enable'), 'Disabled', 'Enabled')]"
                     }
                 ]
@@ -84,17 +84,17 @@
                 "details": {
                     "conflictEffect": "audit",
                     "roleDefinitionIds": [
-                        "/providers/Microsoft.Authorization/roleDefinitions/17d1049b-9a84-46fb-8f53-869881c3d3ab"
+                        "/providers/Microsoft.Authorization/roleDefinitions/f25e0fa2-a7c8-4377-a976-54943a77a395"
                     ],
                     "operations": [
                         {
                             "operation": "addOrReplace",
-                            "field": "Microsoft.Storage/storageAccounts/publicNetworkAccess",
+                            "field": "Microsoft.KeyVault/vaults/publicNetworkAccess",
                             "value": "[if(contains(toLower(if(greater(length(field(concat('tags[', parameters('paasFirewallEnableTagName'), ']'))), 0), field(concat('tags[', parameters('paasFirewallEnableTagName'), ']')), if(greater(length(resourceGroup().tags[parameters('paasFirewallEnableTagName')]), 0), resourceGroup().tags[parameters('paasFirewallEnableTagName')], subscription().tags[parameters('paasFirewallEnableTagName')]))), 'enable'), 'Disabled', 'Enabled')]"
                         },
                         {
                             "operation": "addOrReplace",
-                            "field": "Microsoft.Storage/storageAccounts/networkAcls.defaultAction",
+                            "field": "Microsoft.KeyVault/vaults/networkAcls.defaultAction",
                             "value": "[if(contains(toLower(if(greater(length(field(concat('tags[', parameters('paasFirewallEnableTagName'), ']'))), 0), field(concat('tags[', parameters('paasFirewallEnableTagName'), ']')), if(greater(length(resourceGroup().tags[parameters('paasFirewallEnableTagName')]), 0), resourceGroup().tags[parameters('paasFirewallEnableTagName')], subscription().tags[parameters('paasFirewallEnableTagName')]))), 'enable'), 'Deny', 'Allow')]"
                         }
                     ]

@@ -130,6 +130,10 @@ foreach ($policyInitiativeDefinition in $policyInitiativeDefinitions) {
     $policyInitiativeTempFile = New-TemporaryFile
 
     $policyInitiativeDefinitionObjectExpandedJSON | Out-File -FilePath $policyInitiativeTempFile
+
+    # notepad $policyInitiativeTempFile.FullName
+
+
     $policyInitiativeDefinition = Deploy-AzurePolicyInitiativeDefinition -target $targetId -policyInitiativeDefinitionFilePath $policyInitiativeTempFile.FullName -policyInitiativeName $policyInitiativeName
     Remove-Item -Path $policyInitiativeTempFile.FullName -Force
     Write-Output ("policySetDefinition deployed / updated: '{0}' - '{1}'" -f $policyInitiativeDefinition.name, $policyInitiativeDefinition.properties.displayName)

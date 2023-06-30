@@ -1,0 +1,119 @@
+{
+    "name": "cccPaaSprivateendpoint-tag-initiative",
+    "properties": {
+        "policyType": "Custom",
+        "displayName": "[Custom] Configure resource to use a private link connection - based on tag value.",
+        "description": "Assures that private endpoints are created in the default subnets on PaaS resources. Considers resource tag value.",
+        "metadata": {
+            "version": "1.0.0",
+            "category": "Network"
+        },
+        "parameters": {
+            "privateEndpointSubnetId": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Private endpoint subnet id",
+                    "description": "The subnetId that private endpoint connections should link to",
+                    "strongType": "Microsoft.Network/virtualNetworks/subnets"
+                }
+            },
+            "effect": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Effect",
+                    "description": "Enable or disable the execution of the policy"
+                },
+                "allowedValues": [
+                    "AuditIfNotExists",
+                    "DeployIfNotExists",
+                    "Disabled"
+                ],
+                "defaultValue": "DeployIfNotExists"
+            },
+            "paasPrivateLinkEnableTagName": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "PaaS Private Link Enable Tag Name",
+                    "description": "Name of the tag that enable PaaS Private Endpoint deployment. Value must be 'Enable' for the policy to take effect. "
+                },
+                "defaultValue": "cccPaaSPrivateEndpoint"
+            }
+        },
+        "policyDefinitions": [
+            {
+                "policyDefinitionReferenceId": "<policyDefinitionReferenceId>_1",
+                "policyDefinitionId": "<policyDefinitionId>",
+                "parameters": {
+                    "privateEndpointSubnetId": {
+                        "value": "[parameters('privateEndpointSubnetId')]"
+                    },
+                    "effect": {
+                        "value": "[parameters('effect')]"
+                    },
+                    "paasPrivateLinkEnableTagName": {
+                        "value": "[parameters('paasPrivateLinkEnableTagName')]"
+                    }
+                },
+                "groupNames": []
+            },
+            {
+                "policyDefinitionReferenceId": "<cccPaaSprivateendpoint-tag-storageaccounts>_2",
+                "policyDefinitionId": "<policyDefinitionId>",
+                "parameters": {
+                    "targetSubResource": {
+                        "value": "file"
+                    },
+                    "privateEndpointSubnetId": {
+                        "value": "[parameters('privateEndpointSubnetId')]"
+                    },
+                    "effect": {
+                        "value": "[parameters('effect')]"
+                    },
+                    "paasPrivateLinkEnableTagName": {
+                        "value": "[parameters('paasPrivateLinkEnableTagName')]"
+                    }
+                },
+                "groupNames": []
+            },
+            {
+                "policyDefinitionReferenceId": "<cccPaaSprivateendpoint-tag-storageaccounts>_3",
+                "policyDefinitionId": "<policyDefinitionId>",
+                "parameters": {
+                    "targetSubResource": {
+                        "value": "queue"
+                    },
+                    "privateEndpointSubnetId": {
+                        "value": "[parameters('privateEndpointSubnetId')]"
+                    },
+                    "effect": {
+                        "value": "[parameters('effect')]"
+                    },
+                    "paasPrivateLinkEnableTagName": {
+                        "value": "[parameters('paasPrivateLinkEnableTagName')]"
+                    }
+                },
+                "groupNames": []
+            },
+            {
+                "policyDefinitionReferenceId": "<cccPaaSprivateendpoint-tag-storageaccounts>_4",
+                "policyDefinitionId": "<policyDefinitionId>",
+                "parameters": {
+                    "targetSubResource": {
+                        "value": "table"
+                    },
+                    "privateEndpointSubnetId": {
+                        "value": "[parameters('privateEndpointSubnetId')]"
+                    },
+                    "effect": {
+                        "value": "[parameters('effect')]"
+                    },
+                    "paasPrivateLinkEnableTagName": {
+                        "value": "[parameters('paasPrivateLinkEnableTagName')]"
+                    }
+                },
+                "groupNames": []
+            },
+        ],
+        "policyDefinitionGroups": null
+    }
+}

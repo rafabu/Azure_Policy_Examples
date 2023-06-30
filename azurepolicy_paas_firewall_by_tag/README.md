@@ -24,6 +24,10 @@ _Important_: Consider using these policies in conjunction with `modify` policies
 
 The command will deploy all policies and the initiative found in this directory to the given managementGroup or subscription. The initiative's references are being compiled automatically, based on the number of policies present and will link their ids accordingly. This works by replacing the text tags `<policyDefinitionReferenceId>` and `<policyDefinitionId>` in the initiative's JSON code.
 
+Script is considering any files matching the following file names:
+- `azurepolicy_*.json` (as policy)
+- `azurepolicyInitiative_*.json` (as initiative)
+
 # Manually deploy policies
 
 - `az rest --method 'put' --uri "https://management.azure.com/subscriptions/{subscriptionId}/providers/Microsoft.Authorization/policyDefinitions/{policyName}?api-version=2021-06-01" --body "@azurepolicy.json"`

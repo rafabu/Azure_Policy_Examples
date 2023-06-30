@@ -1,10 +1,10 @@
 {
-    "name": "ceec7813-a535-4dd0-864b-d1e7cee09dab",
+    "name": "cccPaaSprivateendpoint-tag-functionapps",
     "properties": {
-        "displayName": "[Custom] Configure Web Apps to use a private link connection - based on tag value",
+        "displayName": "[Custom] Configure Function Apps to use a private link connection - based on tag value",
         "policyType": "Custom",
-        "mode": "Indexed",
-        "description": "Private endpoints connect your virtual network to Azure services without a public IP address at the source or destination. By mapping private endpoints to your web app or function app, you can reduce data leakage risks. Private Endpoint are supported on vNet-integrated sites only. Based on built-in policy '9f766f00-8d11-464e-80e1-4091d7874074'",
+        "mode": "All",
+        "description": "Private endpoints connect your virtual network to Azure services without a public IP address at the source or destination. By mapping private endpoints to your function app, you can reduce data leakage risks. Private Endpoint are supported on vNet-integrated sites only. Based on built-in policy '9f766f00-8d11-464e-80e1-4091d7874074'",
         "metadata": {
             "version": "1.0.0",
             "category": "App Service"
@@ -61,7 +61,7 @@
                     {
 
                         "field": "kind",
-                        "contains": "functionapp"
+                        "notContains": "functionapp"
                     
                     },
                     {

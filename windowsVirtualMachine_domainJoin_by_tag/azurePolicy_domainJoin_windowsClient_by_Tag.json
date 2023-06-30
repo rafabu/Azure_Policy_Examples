@@ -1,7 +1,7 @@
 {
   "properties": {
     "policyType": "Custom",
-    "mode": "Indexed",
+    "mode": "All",
     "displayName": "[Custom] Windows Client Domain Join (by key vault) - based on tag value.",
     "description": "Deploy Windows Domain Join Extension with KeyVault configuration when the extension does not exist on a given windows Virtual Machine. Joins VM to domain at given OU while getting domain name and OU from resource tag either on resource or if not present the resource group. Join credentials are retrieved from key vault.",
     "metadata": {
