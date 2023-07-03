@@ -1,0 +1,21 @@
+#  Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# .tfvars files
+*.tfvars
+
+# tf lock files (>0.14)
+**/.terraform.lock.hcl
+
+# .exe
+*.exe
+
+# vs code settings
+*.code-workspace
+
+#deployment artifact (ZIP Deployment)
+terraform_*.zip
