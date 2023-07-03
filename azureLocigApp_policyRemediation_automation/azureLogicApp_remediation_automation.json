@@ -13,7 +13,9 @@
                                     },
                                     "body": {
                                         "properties": {
-                                            "policyAssignmentId": "@{items('For_each_Body')?['data']?['policyAssignmentId']}"
+                                            "policyAssignmentId": "@{items('For_each_Body')?['data']?['policyAssignmentId']}",
+                                            "policyDefinitionReferenceId": "@items('For_each_Body')?['data']?['policyDefinitionReferenceId']",
+                                            "resourceDiscoveryMode": "ExistingNonCompliant"
                                         }
                                     },
                                     "headers": {
@@ -69,7 +71,7 @@
                                         "type": "Http"
                                     }
                                 },
-                                "expression": "@contains('Succeeded', body('Azure_API_-_Create_Policy_Remediation_(quick_-_ExistingNonCompliant)')?['properties']?['provisioningState'])",
+                                "expression": "@contains(createArray('Complete','Succeeded'), body('Azure_API_-_Create_Policy_Remediation_(quick_-_ExistingNonCompliant)')?['properties']?['provisioningState'])",
                                 "limit": {
                                     "count": 60,
                                     "timeout": "PT1H"
@@ -88,28 +90,6 @@
                                     "equals": [
                                         "@items('For_each_Body')?['data']?['complianceState']",
                                         "NonCompliant"
-                                    ]
-                                },
-                                {
-                                    "equals": [
-                                        "@items('For_each_Body')?['data']?['subscriptionId']",
-                                        "73e7819b-1f47-457c-b6d0-ddcc1627c6ce"
-                                    ]
-                                },
-                                {
-                                    "or": [
-                                        {
-                                            "endsWith": [
-                                                "@items('For_each_Body')?['data']?['policyDefinitionId']",
-                                                "4bfac813-ec87-47d6-a6cf-9485760ed610"
-                                            ]
-                                        },
-                                        {
-                                            "endsWith": [
-                                                "@items('For_each_Body')?['data']?['policyDefinitionId']",
-                                                "b273517b-8afb-44c2-ba28-5c4fc56349de"
-                                            ]
-                                        }
                                     ]
                                 }
                             ]
