@@ -1,0 +1,75 @@
+{
+    "name": "cccIaaSBuiltInGroupMember-initiative",
+    "properties": {
+        "policyType": "Custom",
+        "displayName": "[Custom] Add members to built-in security groups on Windows Domain joined computer (Administrators and Remote Desktop Users)",
+        "description": "Adds user or group accounts to local windows security group using Add-LocalGroupMember. In order for the policy effect to work, the VM must have a extension JsonADDomainExtension present.",
+        "metadata": {
+            "version": "1.0.0",
+            "category": "Guest Configuration"
+        },
+        "parameters": {
+            "effect": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Effect",
+                    "description": "Enable or disable the execution of the policy"
+                },
+                "allowedValues": [
+                    "DeployIfNotExists",
+                    "Disabled"
+                ],
+                "defaultValue": "DeployIfNotExists"
+            },
+            "groupMember-windows-administrators": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Windows Administrators group member",
+                    "description": "Group or user reference that is made member of the built-in group (local or NetBIOS\\domainName). Several members are supported when defined CSV (ideally with double quote): \"DOMAIN\\first.last\", \"DOMAIN\\sample group name with spaces\""
+                }
+            },
+            "groupMember-windows-remotedesktopusers": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Windows Remote Desktop Users group member",
+                    "description": "Group or user reference that is made member of the built-in group (local or NetBIOS\\domainName). Several members are supported when defined CSV (ideally with double quote): \"DOMAIN\\first.last\", \"DOMAIN\\sample group name with spaces\""
+                }
+            }
+        },
+        "policyDefinitions": [
+            {
+                "policyDefinitionReferenceId": "<policyDefinitionReferenceId>_administrators",
+                "policyDefinitionId": "<policyDefinitionId>",
+                "parameters": {
+                    "effect": {
+                        "value": "[parameters('effect')]"
+                    },
+                    "groupName": {
+                        "value": "Administrators"
+                    },
+                    "groupMember": {
+                        "value": "[parameters('groupMember-windows-administrators')]"
+                    }
+                },
+                "groupNames": []
+            },
+            {
+                "policyDefinitionReferenceId": "<policyDefinitionReferenceId>_remotedesktopusers",
+                "policyDefinitionId": "<policyDefinitionId>",
+                "parameters": {
+                    "effect": {
+                        "value": "[parameters('effect')]"
+                    },
+                    "groupName": {
+                        "value": "Remote Desktop Users"
+                    },
+                    "groupMember": {
+                        "value": "[parameters('groupMember-windows-remotedesktopusers')]"
+                    }
+                },
+                "groupNames": []
+            }
+        ],
+        "policyDefinitionGroups": null
+    }
+}
