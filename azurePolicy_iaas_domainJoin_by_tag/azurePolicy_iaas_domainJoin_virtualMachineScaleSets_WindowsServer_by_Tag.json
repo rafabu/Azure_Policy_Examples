@@ -1,4 +1,5 @@
 {
+  "name": "cccIaaSDomainJoin-tag-VirtualMachineScaleSet-WindowsServer",
   "properties": {
     "policyType": "Custom",
     "mode": "All",
@@ -6,8 +7,7 @@
     "description": "Deploy Windows Domain Join Extension with KeyVault configuration when the extension does not exist on a given windows Virtual Machine. Joins VM to domain at given OU while getting domain name and OU from resource tag either on resource or if not present the resource group. Join credentials are retrieved from key vault.",
     "metadata": {
       "version": "1.0.0",
-      "category": "Guest Configuration",
-      "source": "https://github.com/Azure/Enterprise-Scale/"
+      "category": "Guest Configuration"
     },
     "parameters": {
       "domainUsername": {
@@ -25,7 +25,9 @@
       "keyVaultResourceId": {
         "type": "String",
         "metadata": {
-          "displayName": "keyVaultResourceId"
+          "displayName": "keyVaultResourceId",
+          "strongType": "Microsoft.KeyVault/vaults",
+          "assignPermissions": false
         }
       },
       "effect": {
@@ -90,8 +92,8 @@
                     "contains": "OU="
                   },
                   {
-                  "value": "[subscription().tags[parameters('domainOUPathTagName')]]",
-                  "contains": "OU="
+                    "value": "[subscription().tags[parameters('domainOUPathTagName')]]",
+                    "contains": "OU="
                   }
                 ]
               },

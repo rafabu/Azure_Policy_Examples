@@ -1,0 +1,90 @@
+{
+    "name": "cccIaaSDomainJoin-tag-initiative",
+    "properties": {
+        "policyType": "Custom",
+        "displayName": "[Custom] Windows Domain Join Initiative (by key vault) - based on tag value",
+        "description": "Deploy Windows Domain Join Extension with KeyVault configuration when the extension does not exist on a given windows Virtual Machine. Joins VM to domain at given OU while getting domain name and OU from resource tag either on resource or if not present the resource group. Join credentials are retrieved from key vault.",
+        "metadata": {
+            "version": "1.0.0",
+            "category": "Guest Configuration"
+        },
+        "parameters": {
+            "domainUsername": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "domainUsername (name of key vault secret)"
+                }
+            },
+            "domainPassword": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "domainPassword (name of key vault secret)"
+                }
+            },
+            "keyVaultResourceId": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "keyVaultResourceId",
+                    "strongType": "Microsoft.KeyVault/vaults"
+                }
+            },
+            "effect": {
+                "type": "String",
+                "defaultValue": "DeployIfNotExists",
+                "allowedValues": [
+                    "AuditIfNotExists",
+                    "DeployIfNotExists",
+                    "Disabled"
+                ],
+                "metadata": {
+                    "displayName": "Effect",
+                    "description": "Enable or disable the execution of the policy"
+                }
+            },
+            "domainFQDNTagName": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Windows AD Domain Name Tag Name",
+                    "description": "Name of the tag that defines the Windows AD Domain Name. Tag value must contain the FQDN of the Windows Domain."
+                },
+                "defaultValue": "cccWindowsDomainFQDN"
+            },
+            "domainOUPathTagName": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "domainOUPath",
+                    "description": "Name of the tag that defines the Windows AD OU the computer account is created in. Tag value must contain the DN of the OU (with spaces)."
+                },
+                "defaultValue": "cccWindowsDomainOUPath"
+            }
+        },
+        "policyDefinitions": [
+            {
+                "policyDefinitionReferenceId": "<policyDefinitionReferenceId>_1",
+                "policyDefinitionId": "<policyDefinitionId>",
+                "parameters": {
+                    "domainUsername": {
+                        "value": "[parameters('domainUsername')]"
+                    },
+                    "domainPassword": {
+                        "value": "[parameters('domainPassword')]"
+                    },
+                    "keyVaultResourceId": {
+                        "value": "[parameters('keyVaultResourceId')]"
+                    },
+                    "effect": {
+                        "value": "[parameters('effect')]"
+                    },
+                    "domainFQDNTagName": {
+                        "value": "[parameters('domainFQDNTagName')]"
+                    },
+                    "domainOUPathTagName": {
+                        "value": "[parameters('domainOUPathTagName')]"
+                    }
+                },
+                "groupNames": []
+            }
+        ],
+        "policyDefinitionGroups": null
+    }
+}
