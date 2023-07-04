@@ -4,7 +4,7 @@ Initiative that joins newly deployed Windows VMs and VM Scale Set nodes to a Win
 
 Policy uses the VM extension `JsonADDomainExtension`.
 
-Tags are used to configure
+Tags are used to configure hierarchically (_resource_ wins over _resource group_ over _subscription_)
 - Domain FQDN: _cccWindowsDomainFQDN_
 - Domain OU: _cccWindowsDomainOUPath_
 
@@ -31,3 +31,7 @@ Tags are used to configure
 }
 
 ```
+
+# Reference
+
+This policy initiative is based on CAF's https://www.azadvertizer.net/azpolicyadvertizer/Deploy-Windows-DomainJoin.html. Functionality was added to support configuration based on hierarchically read tags.
