@@ -62,6 +62,14 @@ data "azurecaf_name" "rg" {
 resource "azurerm_resource_group" "rg" {
   name     = data.azurecaf_name.rg.result
   location = var.resource_location
+
+  tags = var.tags
+
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
+  }
 }
 
 ######################################################
@@ -79,7 +87,7 @@ data "azurecaf_name" "egst" {
   use_slug      = true
 }
 resource "azurerm_eventgrid_system_topic" "egst" {
-  name                   = data.azurecaf_name.egst.result
+  name                   = format("%s-policystates", data.azurecaf_name.egst.result)
   location               = "Global"
   resource_group_name    = azurerm_resource_group.rg.name
   source_arm_resource_id = data.azurerm_subscription.sub.id
@@ -89,11 +97,17 @@ resource "azurerm_eventgrid_system_topic" "egst" {
   }
 
   tags = azurerm_resource_group.rg.tags
+
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
+  }
 }
 resource "azurerm_eventgrid_system_topic_event_subscription" "egss" {
-  name                = azurerm_logic_app_workflow.lapp.name
+  name                = format("PolicyStateChanged-webhook-%s", azurerm_logic_app_workflow.lapp.name)
   system_topic        = azurerm_eventgrid_system_topic.egst.name
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = azurerm_eventgrid_system_topic.egst.resource_group_name
 
   event_delivery_schema = "EventGridSchema"
   included_event_types = [
@@ -115,7 +129,7 @@ resource "azurerm_eventgrid_system_topic_event_subscription" "egss" {
       ]
     }
     string_contains {
-      key = "data.policyDefinitionId"
+      key    = "data.policyDefinitionId"
       values = var.policy_definition_id_list
     }
   }
@@ -148,7 +162,7 @@ data "azurecaf_name" "lapp" {
   use_slug      = true
 }
 resource "azurerm_logic_app_workflow" "lapp" {
-  name                = data.azurecaf_name.lapp.result
+  name                = format("%s-remediation", data.azurecaf_name.lapp.result)
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
@@ -160,6 +174,12 @@ resource "azurerm_logic_app_workflow" "lapp" {
   }
 
   tags = azurerm_resource_group.rg.tags
+
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
+  }
 }
 resource "azurerm_logic_app_trigger_http_request" "lapp" {
   name         = "Microsoft.PolicyInsights.PolicyStates"
